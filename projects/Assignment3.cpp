@@ -118,7 +118,7 @@ int main() {
 
   // If file open failed, system exit
   if (!inFile) {
-    cout << "Warning! Filed to read database" << endl << "Syetem exit" << endl;
+    cout << "Warning! Filed to read database" << endl << "System exit" << endl;
     return 1;
   }
 

@@ -28,7 +28,9 @@
         "string": "cpp",
         "istream": "cpp",
         "iosfwd": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "cstring": "cpp",
+        "sstream": "c"
     }, // 同上
 
     // "files.exclude": {
