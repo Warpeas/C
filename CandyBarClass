@@ -1,0 +1,15 @@
+#include "string"
+#include "iostream"
+
+using namespace std;
+
+class CandyBar {
+private:
+  std::string brand;
+  double weight;
+  int calorie;
+
+public:
+  int setCandyBar();
+  void showCandyBar();
+};

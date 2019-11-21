@@ -1,0 +1,15 @@
+#include "iostream"
+#include "string"
+
+class rectangle {
+private:
+  double width;
+  double height;
+
+public:
+    rectangle();
+    rectangle(double, double);
+    int getArea();
+    int getPerimeter();
+    void display();
+};

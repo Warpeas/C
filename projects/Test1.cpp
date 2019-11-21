@@ -1,8 +1,8 @@
-int f(int a, int b) {
-  if (a == b)
-    return a;
-  else if (a > b)
-    return f(a - b, b);
-  else
-    return f(a, b - a);
+#include "cstdio"
+using namespace std;
+
+int main(){
+  int a;
+  scanf("%p", &a);
+  printf("%d", a);
 }

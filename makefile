@@ -9,9 +9,9 @@ INCLUDE = fun.h
 #SRC = main.cpp fun.cpp
 OBJ = main.o fun.o
 
-TARGET = exercise2
-INCLUDE = CandyBar.h
-OBJ = candybar.o cmain.o
+TARGET1 = exercise2
+INCLUDE1 = CandyBar.h
+OBJ1 = candybar.o cmain.o
 
 CFLAGS = -c -Wall
 
@@ -31,4 +31,4 @@ $(TARGET): $(OBJ)
 
 .PHONY: clean
 clean:
-	rm -f *.o $(TARGET1)
+	rm -f *.o $(TARGET)

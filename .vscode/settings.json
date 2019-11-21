@@ -30,7 +30,9 @@
         "iosfwd": "cpp",
         "ostream": "cpp",
         "cstring": "cpp",
-        "sstream": "c"
+        "sstream": "c",
+        "candybarclass": "cpp",
+        "rectangle": "cpp"
     }, // 同上
 
     // "files.exclude": {
