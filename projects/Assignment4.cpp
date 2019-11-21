@@ -1,10 +1,9 @@
 #include "cstdio"
+#include "cstring"
 #include "fstream"
 #include "iostream"
 #include "sstream"
-#include "cstring"
 #include "utf8.h"
-
 
 using namespace std;
 
@@ -19,39 +18,50 @@ struct block {
 
 struct block blocks[array_Size];
 
-void search(string str);
-
 int main() {
   std::ifstream inFile("Blocks.txt", std::ios::in);
   if (!inFile) {
-    cout << "Warning! Filed to read database" << endl << "System exit" << endl;
+    cout << "Warning! Filed" << endl << "System exit" << endl;
     return 1;
   }
-  char line[50];
+  string line;
   for (int i = 0; i < array_Size; i++) {
-    scanf("%[^\n]", line);
-    if ((line[0] == '#' && strcmp(line, "# EOF\n")==1) || line[0] == '\n') {
+    // string l;
+    getline(inFile, line);
+    // string_to_cstring(line, l);
+    if ((line[0] == '#' && line== "# EOF") || line[0] == '\n') {
       i--;
       continue;
-    } else if (strcmp(line, "# EOF\n")==0) {
+    } else if (line== "# EOF\n") {
       arraySize = i;
       break;
     } else {
-      scanf("%x..%x; %s", blocks[i].start, blocks[i].end, blocks[i].name);
+      sscanf(line, "%x..%x; %s", blocks[i].start, blocks[i].end,
+             blocks[i].name);
     }
   }
   *blocks[++arraySize].name = *"No_Block";
+  blocks[arraySize].start = 0;
+  blocks[arraySize].end = 0x10FFFF;
   inFile.close();
 }
 
-void search(unsigned char *str){
-  char charInStr;
-  int arr[arraySize];
-  for(int i = 0;i < arraySize;i++){
-    arr[i] = 0;
+// void search(unsigned char *str) {
+//   char charInStr;
+//   int arr[arraySize];
+//   for (int i = 0; i < arraySize; i++) {
+//     arr[i] = 0;
+//   }
+//   for (int i = 0; i < ; i++) {
+//     charInStr = str[i];
+//     utf8_bytes_to_charpos(str, i);
+//   }
+// }
+
+void string_to_cstring(char *c, string str) {
+  int i = 0;
+  for (; i < str.length(); i++) {
+    c[i] = str[i];
   }
-  for(int i = 0;i < str.length();i++){
-    charInStr = str[i];
-    utf8_bytes_to_charpos(str, i);
-  }
+  c[++i] = '\0';
 }

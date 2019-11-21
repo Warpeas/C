@@ -9,10 +9,14 @@ INCLUDE = fun.h
 #SRC = main.cpp fun.cpp
 OBJ = main.o fun.o
 
-CFLAGS = -c -wall
+TARGET = exercise2
+INCLUDE = CandyBar.h
+OBJ = candybar.o cmain.o
 
-$(TARGET):$(SRC)
-$(CC) -o $(TARGET) $(SRC)
+CFLAGS = -c -Wall
+
+#$(TARGET):$(SRC)
+#$(CC) -o $(TARGET) $(SRC)
 
 #main.o: main.cpp $(INCLUDE)
 #$(CC) -c main.cpp
@@ -20,11 +24,11 @@ $(CC) -o $(TARGET) $(SRC)
 #$(CC) -c factorial.cpp
 
 $(TARGET): $(OBJ)
-$(CC) $(OBJ) -o $@
+	$(CC) $^ -o $@
 
 %.o: %.cpp $(INCLUDE)
-$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $< -o $@
 
 .PHONY: clean
 clean:
-rm -f *.o $(TARGET)
+	rm -f *.o $(TARGET1)
