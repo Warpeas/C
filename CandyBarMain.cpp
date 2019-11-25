@@ -1,4 +1,3 @@
-#include "iostream"
 #include "CandyBarClass"
 
 using namespace std;
