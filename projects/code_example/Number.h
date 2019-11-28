@@ -2,5 +2,9 @@
 
 class Number{
     public:
+    int &operator ++(int);
+    int &operator ++();
     
+    private:
+    int num;
 }
