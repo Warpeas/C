@@ -1,14 +1,18 @@
 #include <cstdio>
 #include <iostream>
 using namespace std;
+
 const int maxN = (int)1e5 + 7;
 int m, k, a[maxN], q;
+
 namespace BBST {
 struct Tree {
   int key, l, r, size;
-} tree[maxN];
+} tree[maxN],tree1[maxN];
+
 int root, num;
-void RR(int &x) {
+
+void LL(int &x) {
   int y = tree[x].l;
   tree[x].l = tree[y].r;
   tree[y].r = x;
@@ -16,6 +20,7 @@ void RR(int &x) {
   tree[x].size = tree[tree[x].l].size + tree[tree[x].r].size + 1;
   x = y;
 }
+
 void LR(int &x) {
   int y = tree[x].r;
   tree[x].r = tree[y].l;
@@ -24,20 +29,21 @@ void LR(int &x) {
   tree[x].size = tree[tree[x].l].size + tree[tree[x].r].size + 1;
   x = y;
 }
+
 void maintain(int &x, bool flag) {
   if (flag == false) {
     if (tree[tree[tree[x].l].l].size > tree[tree[x].r].size) {
-      RR(x);
+      LL(x);
     } else if (tree[tree[tree[x].l].r].size > tree[tree[x].r].size) {
       LR(tree[x].l);
-      RR(x);
+      LL(x);
     } else
       return;
   } else {
     if (tree[tree[tree[x].r].r].size > tree[tree[x].l].size) {
       LR(x);
     } else if (tree[tree[tree[x].r].l].size > tree[tree[x].l].size) {
-      RR(tree[x].r);
+      LL(tree[x].r);
       LR(x);
     } else
       return;
@@ -45,6 +51,7 @@ void maintain(int &x, bool flag) {
   maintain(tree[x].l, false);
   maintain(tree[x].r, true);
 }
+
 void add(int &x, int key) {
   if (x == 0) {
     x = ++num;
@@ -59,6 +66,7 @@ void add(int &x, int key) {
     maintain(x, key > tree[x].key);
   }
 }
+
 void remove(int &x, int key) {
   tree[x].size--;
   if (key > tree[x].key) {
@@ -68,9 +76,9 @@ void remove(int &x, int key) {
   } else {
     if (!tree[x].l && !tree[x].r) {
       x = 0;
-    } else if (!tree[x].l && tree[x].r) {
+    } else if (!tree[x].l) {
       x = tree[x].r;
-    } else if (!tree[x].r && tree[x].l) {
+    } else if (!tree[x].r) {
       x = tree[x].l;
     } else {
       int temp = tree[x].r;
@@ -82,6 +90,7 @@ void remove(int &x, int key) {
     }
   }
 }
+
 int topk(int &x, int k) {
   int cnt = tree[tree[x].l].size + 1;
   if (cnt == k) {
@@ -94,7 +103,27 @@ int topk(int &x, int k) {
 }
 
 } // namespace BBST
-int main() {}
+int main() {
+  int n;
+  BBST::num = 0;
+  BBST::root = 0;
+  scanf("%d", &m);
+  scanf("%d", &k);
+  int w[m];
+  for (int i = 0; i < m; i++) {
+    scanf("%d", &w[i]);
+  }
+  for (int i = 0; i < m; i++) {
+    if (i >= k) {
+      scanf("%d", &n);
+      printf("%d\n", BBST::topk(BBST::root, n));
+      BBST::remove(BBST::root, w[i - k]);
+    }
+    BBST::add(BBST::root, w[i]);
+  }
+  scanf("%d", &n);
+  printf("%d\n", BBST::topk(BBST::root, n));
+}
 /*
 6 3
 201 91 29 13 11 -5

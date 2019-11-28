@@ -1,8 +1,8 @@
-#include "cstdio"
+#include "iostream"
 using namespace std;
 
 int main(){
-  int a;
-  scanf("%p", &a);
-  printf("%d", a);
+  char *c;
+  c[100] = 'a';
+  cout << c[100] << endl;
 }
