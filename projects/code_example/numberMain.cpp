@@ -1,0 +1,20 @@
+#include "Number.h"
+#include <iostream>
+
+using namespace std;
+int main() {
+  Number n1(20);
+  Number n2 = n1++;//use the ++ with (int)
+  cout << n1 << endl;
+  cout << n2 << endl;
+  Number n3 = n2--;//use the -- with(int)
+  cout << n2 << endl;
+  cout << n3 << endl;
+  Number n4 = ++n3;//use the ++ with()
+  cout << n3 << endl;
+  cout << n4 << endl;
+  Number n5 = --n4;//use the -- with()
+  cout << n4 << endl;
+  cout << n5 << endl;
+  return 0;
+}
