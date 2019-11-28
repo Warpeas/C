@@ -5,6 +5,5 @@ int &opeartor ++(Number num){
     return ++num.num;
 }
 
-int &operator ++(){
-    return num++;
+Number Number::operator--() { return --num; }
 }
