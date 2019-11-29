@@ -29,10 +29,10 @@ int main() {
     // string l;
     getline(inFile, line);
     // string_to_cstring(line, l);
-    if ((line[0] == '#' && line== "# EOF") || line[0] == '\n') {
+    if ((line[0] == '#' && line == "# EOF") || line[0] == '\n') {
       i--;
       continue;
-    } else if (line== "# EOF\n") {
+    } else if (line == "# EOF\n") {
       arraySize = i;
       break;
     } else {
