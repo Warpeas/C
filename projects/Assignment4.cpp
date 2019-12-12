@@ -28,6 +28,12 @@ int main() {
   for (int i = 0; i < array_Size; i++) {
     // string l;
     getline(inFile, line);
+    if (line == "# EOF") {
+      cout << "# EOF is right" << endl;
+    }
+    if (line == "#EOF\n") {
+      cout << "# EOF\\n is right" << endl;
+    }
     // string_to_cstring(line, l);
     if ((line[0] == '#' && line == "# EOF") || line[0] == '\n') {
       i--;

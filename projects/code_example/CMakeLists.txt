@@ -1,22 +1,23 @@
 cmake_minimum_required(VERSION 3.6)
-project(example)
+project(LAB13)
 
 set(CMAKE_CXX_STANDARD 14)
+add_executable(main1 ./code1/main1.cpp
+        ./code1/Circle.cpp
+        ./code1/Circle.h
+        ./code1/Rectangle.cpp
+        ./code1/Rectangle.h )
+add_executable(main2 ./code2/main2.cpp
+        ./code2/Circle.cpp
+        ./code2/Circle.h
+        ./code2/Rectangle.cpp
+        ./code2/Rectangle.h
+        ./code2/Shape.cpp
+        ./code2/Shape.h)
 
-include_directories(.)
-
-add_executable(example0
-        code_example/useComplex0.cpp code_example/Complex0.cpp code_example/Complex0.h
-        )
-add_executable(example1
-        code_example/useComplex1.cpp code_example/Complex1.cpp code_example/Complex1.h
-        )
-add_executable(example2
-        code_example/useComplex2.cpp code_example/Complex2.cpp code_example/Complex2.h
-        )
-add_executable(example3
-        code_example/useComplex3.cpp code_example/Complex3.cpp code_example/Complex3.h
-        )
-add_executable(example4
-        code_example/useComplex4.cpp code_example/Complex4.cpp code_example/Complex4.h
-        )
+add_executable(main3 ./code3/main3.cpp
+        ./code3/Circle.cpp
+        ./code3/Circle.h
+        ./code3/Rectangle.cpp
+        ./code3/Rectangle.h
+        ./code3/Shape.cpp)
