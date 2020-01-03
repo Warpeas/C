@@ -68,7 +68,8 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "iomanip": "cpp"
-    }, // 同上
+    },
+    "C_Cpp.intelliSenseEngineFallback": "Enabled", // 同上
 
     // "files.exclude": {
     //     "**/.classpath": true,

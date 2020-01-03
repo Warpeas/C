@@ -2,10 +2,11 @@
 using namespace std;
 
 int main() {
-  Box b1 = Box();
+  Box *b1 = new Box();
   Box b2 = Box(1, 5, 10);
   cout << "b1: " << endl;
   cout << b1 << endl;
+  delete b1;
   cout << "b2: " << endl;
   cout << b2.getLength() << " ";
   cout << b2.getBreadth() << " ";

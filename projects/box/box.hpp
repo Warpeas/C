@@ -48,9 +48,7 @@ public:
     b = other.b;
     h = other.h;
   };
-  ~Box(){
-    delete this;
-  };
+  ~Box(){  };
   int getLength() { return l; };
   int getBreadth() { return b; };
   int getHeight() { return h; };
