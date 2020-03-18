@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 public class Minimum_Volatilty_Answer {
     public static void main(String[] args) {
+        long start = System.currentTimeMillis();
         Scanner in = new Scanner(System.in);
         int n = in.nextInt();
         int[] a = new int[n];
@@ -20,5 +21,7 @@ public class Minimum_Volatilty_Answer {
             sum += min;
         }
         System.out.println(sum);
+        long end = System.currentTimeMillis();
+        System.out.println(end-start);
     }
 }
