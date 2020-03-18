@@ -65,11 +65,14 @@ static int n;
 static day da[2000000] = {};
 
 void construct() {
-  iostream::sync_with_stdio(false);
+  iostream::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
   // ifstream fin;
   // fin.open("input.txt");
   // cin.rdbuf(fin.rdbuf());
-  cin >> n;
+  cin >>
+      n;
   long tmp;
   day_s d[n];
   for (int i = 0; i < n; i++) {
@@ -121,7 +124,9 @@ long long calculate() {
 }
 
 int main() {
-  iostream::sync_with_stdio(false);
+    iostream::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
   construct();
   // for (int i = 0; i < n; i++) {
   //   cout << i << " " << da[i] << " " << da[i].getNxt() << " " <<
