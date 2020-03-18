@@ -1,5 +1,7 @@
 #include <algorithm>
+#include <fstream>
 #include <iostream>
+#include <windows.h>
 
 using namespace std;
 class day {
@@ -61,11 +63,15 @@ public:
 };
 
 static int n;
-static day da[0] = {};
+static day da[2000000] = {};
 
 void construct() {
   iostream::sync_with_stdio(false);
+  ifstream fin;
+  fin.open("input.txt");
+  cin.rdbuf(fin.rdbuf());
   cin >> n;
+  cout << 1;
   long tmp;
   day_s d[n];
   for (int i = 0; i < n; i++) {
@@ -75,15 +81,16 @@ void construct() {
   }
   sort(d, d + n);
   // for (int i = 0; i < n; i++) {
-  //   cout << d[i];
+  //   cout << da[i];
   // }
-  // cout << endl;
+  cout << endl;
   for (int i = 0; i < n; i++) {
     da[d[i].getIndex()].setPre(i - 1 > -1 ? d[i - 1].getIndex() : -1);
     da[d[i].getIndex()].setNxt(i + 1 < n ? d[i + 1].getIndex() : -1);
   }
   // for (int i = 0; i < n; i++) {
-  //   cout << i << " " << da[i] << " " << da[i].getPre() << " " << da[i].getNxt()
+  //   cout << i << " " << da[i] << " " << da[i].getPre() << " " <<
+  //   da[i].getNxt()
   //        << endl;
   // }
 }
@@ -116,6 +123,9 @@ long long calculate() {
 }
 
 int main() {
+  SYSTEMTIME sys;
+  GetLocalTime(&sys);
+  long start = sys.wMilliseconds;
   std::iostream::sync_with_stdio(false);
   construct();
   // for (int i = 0; i < n; i++) {
@@ -124,4 +134,7 @@ int main() {
   //        << endl;
   // }
   cout << calculate() << endl;
+  long end = sys.wMilliseconds;
+  cout << end - start << endl;
+  return 0;
 }
