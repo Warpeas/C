@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include <queue>
 
@@ -32,52 +33,98 @@ int isPathValid(int path) {
   }
 }
 
-int pruned(int x, int y, int path, int graph[8][8]) {
+int pruned(int x, int y, int path, int g[8][8]) {
+  int graph[8][8];
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      graph[i][j] = g[i][j];
+    }
+  }
+  graph[x][y] = 0;
   path = BFS(x, y, path, graph);
   if (isPathValid(path)) {
-    return 1;
-  } else {
     return 0;
+  } else {
+    return 1;
   }
 }
 
 int BFS(int x, int y, int path, int graph[8][8]) {
   queue<node> q;
   q.push(node{x, y});
+  int i;
   while (!q.empty()) {
-    node node = q.front();
+    node nod = q.front();
     q.pop();
-    for (int i = node.x - 1; i < n; i += 2) {
-      if (graph[i][node.y] == 1) {
-      }
+    i = nod.x - 1;
+    if (i >= 0 && i < n && graph[i][nod.y] == 1) {
+      q.push(node{i, nod.y});
+      graph[i][nod.y] = 0;
+      ++path;
+    }
+    i += 2;
+    if (i >= 0 && i < n && graph[i][nod.y] == 1) {
+      q.push(node{i, nod.y});
+      graph[i][nod.y] = 0;
+      ++path;
+    }
+    i = nod.y - 1;
+    if (i >= 0 && i < n && graph[nod.x][i] == 1) {
+      q.push(node{nod.x, i});
+      graph[nod.x][i] = 0;
+      ++path;
+    }
+    i += 2;
+    if (i >= 0 && i < n && graph[nod.x][i] == 1) {
+      q.push(node{nod.x, i});
+      graph[nod.x][i] = 0;
+      ++path;
     }
   }
   return path;
 }
 
-void DFS(int x, int y, int path, int graph[8][8]) {
+void DFS(int x, int y, int path, int g[8][8]) {
   if (x == n - 1 && y == 0) {
     if (isPathValid(path)) {
-      count = count + 1;
+      ++count;
     }
     return;
   }
-  for (int i = x - 1; i < n; i += 2) {
-    if (graph[i][y] == 1) {
-      int prune = pruned(x + i, y, path, graph);
-      if (!prune) {
-        graph[i][y] = 0;
-        DFS(i, y, path + 1, graph);
-      }
+  int graph[8][8];
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      graph[i][j] = g[i][j];
     }
   }
-  for (int i = x - 1; i < n; i += 2) {
-    if (graph[x][i] == 1) {
-      int prune = pruned(x + i, y, path, graph);
-      if (!prune) {
-        graph[x][i] = 0;
-        DFS(x, i, path + 1, graph);
-      }
+  graph[x][y] = 0;
+  int i;
+  i = x - 1;
+  if (i >= 0 && i < n && graph[i][y] == 1) {
+    int prune = pruned(i, y, path + 1, graph);
+    if (!prune) {
+      DFS(i, y, path + 1, graph);
+    }
+  }
+  i += 2;
+  if (i >= 0 && i < n && graph[i][y] == 1) {
+    int prune = pruned(i, y, path + 1, graph);
+    if (!prune) {
+      DFS(i, y, path + 1, graph);
+    }
+  }
+  i = y - 1;
+  if (i >= 0 && i < n && graph[x][i] == 1) {
+    int prune = pruned(x, i, path + 1, graph);
+    if (!prune) {
+      DFS(x, i, path + 1, graph);
+    }
+  }
+  i += 2;
+  if (i >= 0 && i < n && graph[x][i] == 1) {
+    int prune = pruned(x, i, path + 1, graph);
+    if (!prune) {
+      DFS(x, i, path + 1, graph);
     }
   }
   return;
@@ -85,6 +132,9 @@ void DFS(int x, int y, int path, int graph[8][8]) {
 
 void construct() {
   iostream::sync_with_stdio(0);
+  ifstream fin;
+  fin.open("input.txt");
+  cin.rdbuf(fin.rdbuf());
   cin >> n;
   char c;
   for (int i = 0; i < n; i++) {
@@ -101,6 +151,18 @@ void construct() {
 }
 
 int main() {
+  iostream::sync_with_stdio(0);
   construct();
+  //   for (int i = 0; i < n; i++) {
+  //     for (int j = 0; j < n; j++) {
+  //       cout << graph[i][j] << " ";
+  //     }
+  //     cout << "\n";
+  //   }
+  int prune = pruned(0, 0, 1, graph);
+  if (!prune) {
+    DFS(0, 0, 1, graph);
+  }
+  cout << count << "\n";
   return 0;
 }
