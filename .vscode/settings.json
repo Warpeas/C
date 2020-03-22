@@ -69,7 +69,15 @@
         "typeinfo": "cpp",
         "iomanip": "cpp"
     },
-    "C_Cpp.intelliSenseEngineFallback": "Enabled", // 同上
+    "C_Cpp.intelliSenseEngineFallback": "Enabled",
+    "sqltools.connections": [
+        {
+            "database": "/home/hunter/Downloads/filmdb.sqlite",
+            "dialect": "SQLite",
+            "name": "filmdb"
+        }
+    ],
+    "sqltools.useNodeRuntime": true, // 同上
 
     // "files.exclude": {
     //     "**/.classpath": true,
