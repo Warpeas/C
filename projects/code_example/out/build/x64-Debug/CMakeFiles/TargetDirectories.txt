@@ -1,0 +1,5 @@
+D:/Programs/VSC-C/projects/code_example/out/build/x64-Debug/CMakeFiles/main1.dir
+D:/Programs/VSC-C/projects/code_example/out/build/x64-Debug/CMakeFiles/main2.dir
+D:/Programs/VSC-C/projects/code_example/out/build/x64-Debug/CMakeFiles/main3.dir
+D:/Programs/VSC-C/projects/code_example/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+D:/Programs/VSC-C/projects/code_example/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
