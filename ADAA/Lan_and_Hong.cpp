@@ -44,11 +44,11 @@ int out(node nod, int graph[8][8]) {
     ++flag;
   }
   i = nod.y - 1;
-  if (i >= 0 && i < n && graph[i][nod.y] == 0) {
+  if (i >= 0 && i < n && graph[nod.x][i] == 0) {
     ++flag;
   }
   i += 2;
-  if (i >= 0 && i < n && graph[i][nod.y] == 0) {
+  if (i >= 0 && i < n && graph[nod.x][i] == 0) {
     ++flag;
   }
   return flag;
@@ -101,6 +101,7 @@ void DFS(node nod, int path, int g[8][8]) {
   if (nod.x == n - 1 && nod.y == 0) {
     if (path == total) {
       ++count;
+      // cout << "Yes" << endl;
       // for (int i = 0; i < n; i++) {
       //   for (int j = 0; j < n; j++) {
       //     cout << g[i][j] << "\t";
@@ -113,43 +114,41 @@ void DFS(node nod, int path, int g[8][8]) {
   }
   int graph[8][8];
   array_copy(g, graph);
-  // memcpy(graph, g, n * n * sizeof(*g));
-  // for (int i = 0; i < n; i++) {
-  //   for (int j = 0; j < n; j++) {
-  //     graph[i][j] = g[i][j];
-  //   }
-  // }
   graph[nod.x][nod.y] = path;
   vector<node> nodes;
   vector<node> one_out;
   int i;
   i = nod.x - 1;
   if (i >= 0 && i < n && graph[i][nod.y] == 0) {
-    if (out(node{i, nod.y}, graph) == 1) {
+    if (!(i == n - 1 && nod.y == 0) && out(node{i, nod.y}, graph) == 1) {
       one_out.push_back(node{i, nod.y});
+    } else {
+      nodes.push_back(node{i, nod.y});
     }
-    nodes.push_back(node{i, nod.y});
   }
   i += 2;
   if (i >= 0 && i < n && graph[i][nod.y] == 0) {
-    if (out(node{i, nod.y}, graph) == 1) {
+    if (!(i == n - 1 && nod.y == 0) && out(node{i, nod.y}, graph) == 1) {
       one_out.push_back(node{i, nod.y});
+    } else {
+      nodes.push_back(node{i, nod.y});
     }
-    nodes.push_back(node{i, nod.y});
   }
   i = nod.y - 1;
   if (i >= 0 && i < n && graph[nod.x][i] == 0) {
-    if (out(node{nod.x, i}, graph) == 1) {
+    if (!(nod.x == n - 1 && i == 0) && out(node{nod.x, i}, graph) == 1) {
       one_out.push_back(node{nod.x, i});
+    } else {
+      nodes.push_back(node{nod.x, i});
     }
-    nodes.push_back(node{nod.x, i});
   }
   i += 2;
   if (i >= 0 && i < n && graph[nod.x][i] == 0) {
-    if (out(node{nod.x, i}, graph) == 1) {
+    if (!(nod.x == n - 1 && i == 0) && out(node{nod.x, i}, graph) == 1) {
       one_out.push_back(node{nod.x, i});
+    } else {
+      nodes.push_back(node{nod.x, i});
     }
-    nodes.push_back(node{nod.x, i});
   }
 
   // judge
@@ -158,7 +157,7 @@ void DFS(node nod, int path, int g[8][8]) {
       return;
     } else {
       array_copy(graph, tg);
-        tg[one_out[0].x][one_out[0].y] = path;
+      tg[one_out[0].x][one_out[0].y] = path;
       if (BFS(one_out[0], node{n - 1, 0}, tg)) {
         DFS(one_out[0], path + 1, graph);
       }
@@ -167,17 +166,27 @@ void DFS(node nod, int path, int g[8][8]) {
     node current, start, end;
     if (nodes.size() == 3) {
       for (int i = 0; i < 3; i++) {
+        array_copy(graph, tg);
         current = nodes[i];
         start = nodes[(i + 1) % 3];
         end = nodes[(i + 2) % 3];
-        // copy(graph, graph + n * n, tg);
-        // memcpy(tg, graph, n * n * sizeof(*graph));
+        tg[current.x][current.y] = path;
+        if (BFS(start, end, tg)) {
+          DFS(current, path + 1, graph);
+        }
+      }
+    } else if (nodes.size() == 2) {
+
+      for (int i = 0; i < 2; i++) {
         array_copy(graph, tg);
+        current = nodes[i];
+        start = nodes[(i + 1) % 2];
+        end = node{n - 1, 0};
         tg[current.x][current.y] = path;
         if (BFS(start, end, tg)) {
           DFS(current, path + 1, graph);
         } //else {
-        //   cout << "no1" << endl;
+        //   cout << "no2" << endl;
         //   for (int i = 0; i < n; i++) {
         //     for (int j = 0; j < n; j++) {
         //       cout << tg[i][j] << "\t";
@@ -187,53 +196,12 @@ void DFS(node nod, int path, int g[8][8]) {
         //   cout << endl;
         // }
       }
-    } else if (nodes.size() == 2) {
-      for (int i = 0; i < nodes.size(); i++) {
-        // copy(graph, graph + n * n, tg);
-        // memcpy(tg, graph, n * n * sizeof(*graph));
-        array_copy(graph, tg);
-        current = nodes[i];
-        start = nodes[(i + 1) % 2];
-        end = node{n - 1, 0};
-        tg[current.x][current.y] = path;
-        if (BFS(start, end, tg)) {
-          DFS(current, path + 1, graph);
-        } else {
-          cout << "no2" << endl;
-          for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-              cout << tg[i][j] << "\t";
-            }
-            cout << "\n";
-          }
-          cout << endl;
-        }
-      }
     } else if (nodes.size() == 1) {
-      array_copy(graph, tg);
+      // array_copy(graph, tg);
       current = nodes[0];
-      end = node{n - 1, 0};
-      // if (one_out_cnt(tg) <= 1) {
+      // end = node{n - 1, 0};
       DFS(current, path + 1, graph);
-      // } else {
-      //   cout << "no2" << endl;
-      //   for (int i = 0; i < n; i++) {
-      //     for (int j = 0; j < n; j++) {
-      //       cout << graph[i][j] << "\t";
-      //     }
-      //     cout << "\n";
-      //   }
-      //   cout << endl;
-      // }
     } else {
-      cout << "no3" << endl;
-      for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-          cout << graph[i][j] << "\t";
-        }
-        cout << "\n";
-      }
-      cout << endl;
       return;
     }
   }
