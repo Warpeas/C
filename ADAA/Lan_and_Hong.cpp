@@ -185,21 +185,10 @@ void DFS(node nod, int path, int g[8][8]) {
         tg[current.x][current.y] = path;
         if (BFS(start, end, tg)) {
           DFS(current, path + 1, graph);
-        } //else {
-        //   cout << "no2" << endl;
-        //   for (int i = 0; i < n; i++) {
-        //     for (int j = 0; j < n; j++) {
-        //       cout << tg[i][j] << "\t";
-        //     }
-        //     cout << "\n";
-        //   }
-        //   cout << endl;
-        // }
+        }
       }
     } else if (nodes.size() == 1) {
-      // array_copy(graph, tg);
       current = nodes[0];
-      // end = node{n - 1, 0};
       DFS(current, path + 1, graph);
     } else {
       return;
@@ -235,12 +224,6 @@ int main() {
   ofstream fo;
   fo.open("output.txt");
   cout.rdbuf(fo.rdbuf());
-  //   for (int i = 0; i < n; i++) {
-  //     for (int j = 0; j < n; j++) {
-  //       cout << graph[i][j] << " ";
-  //     }
-  //     cout << "\n";
-  //   }
   DFS(node{0, 0}, 1, global_graph);
   cout << count << "\n";
   return 0;
