@@ -42,12 +42,12 @@ public class YoGiOh {
     }
 
     /*
-    |   score   |   points  |
-    |   2:0     |   3       |
-    |   2:1     |   2       |
-    |   1:1     |   1       |
-    |   1:2     |   1       |
-    |   0:2     |   0       |
+    |   score   |   points  |   index   |
+    |   2:0     |   3       |   0       |
+    |   2:1     |   2       |   1       |
+    |   1:1     |   1       |   2       |
+    |   1:2     |   1       |   3       |
+    |   0:2     |   0       |   4       |
     */
 
     /*
@@ -63,22 +63,33 @@ public class YoGiOh {
     */
 
     static int[][] result = {{3, 0}, {2, 1}, {1, 1}, {1, 2}, {0, 3}};
+    static String[] score={"2:0","2:1","1:1","1:2","0:2"};
 
     static HashMap<int[], Integer> hashMap;
     static int n;
 
-    static int dfs(int[] players, int a, int b, int r) {
+    static int dfs(int[] players, String[][] scores, int a, int b, int r) {
         players[a] -= result[r][0];
         players[b] -= result[r][1];
+        scores[a][b] = score[r];
+        scores[b][a] = score[4-r];
 
         int[] cp = players.clone();
         Arrays.sort(cp);
         if (cp[0] < 0) {
             return 0;
         } else if (cp[n - 1] == 0 && a == n - 2) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    System.out.print(scores[i][j] + " ");
+                }
+                System.out.println();
+            }
+            System.out.println();
             return 1;
         } else {
             if (hashMap.containsKey(cp)) {
+                System.out.println(Arrays.toString(cp) + " " + hashMap.get(cp));
                 return hashMap.get(cp);
             } else {
                 b++;
@@ -89,12 +100,15 @@ public class YoGiOh {
                     }
                     b = a + 1;
                 }
-                int cnt = dfs(players.clone(), a, b, 0) +
-                        dfs(players.clone(), a, b, 1) +
-                        dfs(players.clone(), a, b, 2) +
-                        dfs(players.clone(), a, b, 3) +
-                        dfs(players.clone(), a, b, 4);
-                hashMap.put(players, cnt);
+                int cnt = dfs(players.clone(), scores.clone(), a, b, 0) +
+                        dfs(players.clone(), scores.clone(), a, b, 1) +
+                        dfs(players.clone(), scores.clone(), a, b, 2) +
+                        dfs(players.clone(), scores.clone(), a, b, 3) +
+                        dfs(players.clone(), scores.clone(), a, b, 4);
+                hashMap.put(cp, cnt);
+//                if (hashMap.containsKey(cp)) {
+//                    System.out.println(Arrays.toString(cp) + " " + hashMap.get(cp));
+//                }
                 return cnt;
             }
         }
@@ -111,10 +125,12 @@ public class YoGiOh {
         for (int i = 0; i < n; i++) {
             players[i] = in.nextInt();
         }
-        System.out.println(dfs(players.clone(), 0, 1, 0) +
-                dfs(players.clone(), 0, 1, 1) +
-                dfs(players.clone(), 0, 1, 2) +
-                dfs(players.clone(), 0, 1, 3) +
-                dfs(players.clone(), 0, 1, 4));
+        String[][] scores = new String[n][n];
+        out.println(dfs(players.clone(), scores, 0, 1, 0) +
+                dfs(players.clone(), scores, 0, 1, 1) +
+                dfs(players.clone(), scores, 0, 1, 2) +
+                dfs(players.clone(), scores, 0, 1, 3) +
+                dfs(players.clone(), scores, 0, 1, 4));
+        out.close();
     }
 }
