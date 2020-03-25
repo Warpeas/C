@@ -75,8 +75,14 @@ public class YoGiOh {
         players[a] -= result[r][0];
         players[b] -= result[r][1];
 
-        int key = Arrays.hashCode(new int[]{Arrays.hashCode(players), rest});
-        if (players[a] < 0 || (players [a]> 0 && players[b] < 0) || (b == n - 1 && players[a] != 0) || (players[a] > 3 * (n - b - 1))) {
+//        int[] cp = Arrays.copyOfRange(players, a, n);
+//        Arrays.sort(cp);
+//        int key = Arrays.hashCode(new int[]{Arrays.hashCode(cp), rest});
+//        int key = Arrays.hashCode(new int[]{Arrays.hashCode(players), rest});
+        int[] cp = Arrays.copyOfRange(players, a, n);
+        Arrays.sort(cp);
+        int key = Arrays.hashCode(new int[]{Arrays.hashCode(cp), rest});
+        if (players[a] < 0 || (players[a] > 0 && players[b] < 0) || (b == n - 1 && players[a] != 0) || (players[a] > 3 * (n - b - 1)) || (players[b] > 3 * (n - a - 1))) {
             return 0;
         } else if (players[n - 2] == 0 && players[n - 1] == 0 && rest == 0) {
             return 1;
@@ -113,48 +119,54 @@ public class YoGiOh {
 //        OutputStream outputStream = System.out;
 //        InputReader in = new InputReader(inputStream);
 //        PrintWriter out = new PrintWriter(outputStream);
-        hashMap = new HashMap<>();
-        n = in.nextInt();
-        int[] players = new int[n];
-        for (int i = 0; i < n; i++) {
-            players[i] = in.nextInt();
-        }
-        int rest = n * (n - 1) / 2 - 1;
-//        long start = System.currentTimeMillis();
-        long result = dfs(players.clone(), 0, 1, 0, rest) % 998244353;
-//        long end = System.currentTimeMillis();
-//        out.println(end - start);
+        int t = in.nextInt();
+        for (int j = 0; j < t; j++) {
+            hashMap = new HashMap<>();
+            n = in.nextInt();
+            int[] players = new int[n];
+            for (int i = 0; i < n; i++) {
+                players[i] = in.nextInt();
+            }
+            int rest = n * (n - 1) / 2 - 1;
+            long start = System.currentTimeMillis();
+            long result = dfs(players.clone(), 0, 1, 0, rest) % 998244353;
+            long end = System.currentTimeMillis();
+            out.println(end - start);
 
-//        start = System.currentTimeMillis();
-        result += dfs(players.clone(), 0, 1, 4, rest) % 998244353;
-        result %= 998244353;
-//        end = System.currentTimeMillis();
-//        out.println(end - start);
+            start = System.currentTimeMillis();
+            result += dfs(players.clone(), 0, 1, 4, rest) % 998244353;
+            result %= 998244353;
+            end = System.currentTimeMillis();
+            out.println(end - start);
 
-//        start = System.currentTimeMillis();
-        result += dfs(players.clone(), 0, 1, 1, rest) % 998244353;
-        result %= 998244353;
-//        end = System.currentTimeMillis();
-//        out.println(end - start);
+            start = System.currentTimeMillis();
+            result += dfs(players.clone(), 0, 1, 1, rest) % 998244353;
+            result %= 998244353;
+            end = System.currentTimeMillis();
+            out.println(end - start);
 
-//        start = System.currentTimeMillis();
-        result += dfs(players.clone(), 0, 1, 3, rest) % 998244353;
-        result %= 998244353;
-//        end = System.currentTimeMillis();
-//        out.println(end - start);
+            start = System.currentTimeMillis();
+            result += dfs(players.clone(), 0, 1, 3, rest) % 998244353;
+            result %= 998244353;
+            end = System.currentTimeMillis();
+            out.println(end - start);
 
-//        start = System.currentTimeMillis();
-        result += dfs(players.clone(), 0, 1, 2, rest) % 998244353;
-        result %= 998244353;
-//        end = System.currentTimeMillis();
-//        out.println(end - start);
+            start = System.currentTimeMillis();
+            result += dfs(players.clone(), 0, 1, 2, rest) % 998244353;
+            result %= 998244353;
+            end = System.currentTimeMillis();
+            out.println(end - start);
+            Runtime.getRuntime().freeMemory();
 
 //        out.println((dfs(players.clone(), scores, 0, 1, 0, rest) % 998244353 +
 //                dfs(players.clone(), scores, 0, 1, 1, rest) % 998244353 +
 //                dfs(players.clone(), scores, 0, 1, 2, rest) % 998244353 +
 //                dfs(players.clone(), scores, 0, 1, 3, rest) % 998244353 +
 //                dfs(players.clone(), scores, 0, 1, 4, rest) % 998244353) % 998244353);
-        out.println(result);
+            out.println(result);
+            out.println();
+            hashMap.clear();
+        }
         out.close();
     }
 }
