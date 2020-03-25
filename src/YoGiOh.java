@@ -73,7 +73,7 @@ public class YoGiOh {
     static HashMap<Integer, Long> hashMap;
     static int n;
 
-    static long dfs(int[] players, String[][] scores, int a, int b, int r, int rest) {
+    static long dfs(int[] players, String[][] scores, int a, int b, int r, int rest, int[]s) {
         players[a] -= result[r][0];
         players[b] -= result[r][1];
         scores[a][b] = score[r];
@@ -81,17 +81,17 @@ public class YoGiOh {
 
         int[] cp = players.clone();
         Arrays.sort(cp);
-        int key = Arrays.hashCode(new int[]{Arrays.hashCode(cp), rest});
+        int key = Arrays.hashCode(new int[][]{players, s});
         if (cp[0] < 0 || (cp[n - 1] > 0 && rest == 0) || (b == n - 1 && players[a] != 0)) {
             return 0;
         } else if (cp[n - 1] == 0 && rest == 0) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    out.print(scores[i][j] + " ");
-                }
-                out.println();
-            }
-            System.out.println();
+//            for (int i = 0; i < n; i++) {
+//                for (int j = 0; j < n; j++) {
+//                    out.print(scores[i][j] + " ");
+//                }
+//                out.println();
+//            }
+//            out.println();
             return 1;
         } else {
             if (hashMap.containsKey(key)) {
@@ -106,11 +106,11 @@ public class YoGiOh {
                     }
                     b = a + 1;
                 }
-                long cnt = dfs(players.clone(), scores.clone(), a, b, 0, rest - 1) % 998244353 +
-                        dfs(players.clone(), scores.clone(), a, b, 1, rest - 1) % 998244353 +
-                        dfs(players.clone(), scores.clone(), a, b, 2, rest - 1) % 998244353 +
-                        dfs(players.clone(), scores.clone(), a, b, 3, rest - 1) % 998244353 +
-                        dfs(players.clone(), scores.clone(), a, b, 4, rest - 1) % 998244353;
+                long cnt = dfs(players.clone(), scores.clone(), a, b, 0, rest - 1,s.clone()) % 998244353 +
+                        dfs(players.clone(), scores.clone(), a, b, 1, rest - 1,s.clone()) % 998244353 +
+                        dfs(players.clone(), scores.clone(), a, b, 2, rest - 1,s.clone()) % 998244353 +
+                        dfs(players.clone(), scores.clone(), a, b, 3, rest - 1,s.clone()) % 998244353 +
+                        dfs(players.clone(), scores.clone(), a, b, 4, rest - 1,s.clone()) % 998244353;
                 cnt %= 998244353;
                 hashMap.put(key, cnt);
 //                if (hashMap.containsKey(key)) {
@@ -134,34 +134,52 @@ public class YoGiOh {
         }
         String[][] scores = new String[n][n];
         int rest = n * (n - 1) / 2 - 1;
+        int[] s = new int[rest + 1];
+
+        //  first try
         long start = System.currentTimeMillis();
-        long result = dfs(players.clone(), scores, 0, 1, 0, rest) % 998244353;
+
+        long result = dfs(players.clone(), scores, 0, 1, 0, rest,s.clone()) % 998244353;
+
         long end = System.currentTimeMillis();
         out.println(end - start);
 
+        //  second try
         start = System.currentTimeMillis();
-        result += dfs(players.clone(), scores, 0, 1, 4, rest) % 998244353;
+
+        result += dfs(players.clone(), scores, 0, 1, 4, rest,s.clone()) % 998244353;
         result %= 998244353;
+
         end = System.currentTimeMillis();
         out.println(end - start);
 
+        //  third try
         start = System.currentTimeMillis();
-        result += dfs(players.clone(), scores, 0, 1, 1, rest) % 998244353;
+
+        result += dfs(players.clone(), scores, 0, 1, 1, rest,s.clone()) % 998244353;
         result %= 998244353;
+
         end = System.currentTimeMillis();
         out.println(end - start);
 
+        //  forth try
         start = System.currentTimeMillis();
-        result += dfs(players.clone(), scores, 0, 1, 3, rest) % 998244353;
+
+        result += dfs(players.clone(), scores, 0, 1, 3, rest,s.clone()) % 998244353;
         result %= 998244353;
+
         end = System.currentTimeMillis();
         out.println(end - start);
 
+        //  fifth try
         start = System.currentTimeMillis();
-        result += dfs(players.clone(), scores, 0, 1, 2, rest) % 998244353;
+
+        result += dfs(players.clone(), scores, 0, 1, 2, rest,s.clone()) % 998244353;
         result %= 998244353;
+
         end = System.currentTimeMillis();
         out.println(end - start);
+        out.println();
 
 //        out.println((dfs(players.clone(), scores, 0, 1, 0, rest) % 998244353 +
 //                dfs(players.clone(), scores, 0, 1, 1, rest) % 998244353 +
