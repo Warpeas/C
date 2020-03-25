@@ -1,7 +1,8 @@
 import java.io.*;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
-public class Elites_In_the_Casino_Answer {
+public class YoGiOh {
     static class InputReader {
         public BufferedReader reader;
         public StringTokenizer tokenizer;
@@ -38,47 +39,40 @@ public class Elites_In_the_Casino_Answer {
             return next().toCharArray();
         }
     }
+
+    /*
+    |   score   |   points  |
+    |   2:0     |   3       |
+    |   2:1     |   2       |
+    |   1:1     |   1       |
+    |   1:2     |   1       |
+    |   0:2     |   0       |
+    */
+
+    /*
+    hashmap<(string)number+score:(int)cnt>
+    */
+
+    /*
+    a (n)*(n) matrix
+    and a n array store each score
+    first dfs, fill each grid
+    when the left empty grid is the number n then find if the situation is calculate
+    use sorted array? relate with an int
+    */
+
+    static HashMap<int[],Integer>hashMap;
+    static int n;
+    int dfs(int[] players, int[][] scores) {
+        return 0;
+    }
+
     public static void main(String[] args) {
         InputStream inputStream = System.in;
         OutputStream outputStream = System.out;
         InputReader in = new InputReader(inputStream);
         PrintWriter out = new PrintWriter(outputStream);
-        int n = in.nextInt();
-        char[][] chars = new char[n][];
-        for (int i = 0; i < n; i++) {
-            chars[i] = in.next().toCharArray();
-        }
-        int result = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                result = (result + Shuffle(chars[i], chars[j])) % 998244353;
-            }
-        }
-        out.println(result);
-        out.close();
-    }
-    
-    public static int Shuffle(char[] a, char[] b) {
-        StringBuilder stringBuilder = new StringBuilder();
-        int p = a.length;
-        int q = b.length;
-        if (p >= q) {
-            for (int i = 0; i < p - q; i++) {
-                stringBuilder.append(a[i]);
-            }
-            for (int i = 0; i < q; i++) {
-                stringBuilder.append(a[i + p - q]);
-                stringBuilder.append(b[i]);
-            }
-        } else {
-            for (int i = 0; i < q - p; i++) {
-                stringBuilder.append(b[i]);
-            }
-            for (int i = 0; i < p; i++) {
-                stringBuilder.append(a[i]);
-                stringBuilder.append(b[i + q - p]);
-            }
-        }
-        return Integer.parseInt(stringBuilder.toString()) % 998244353;
+        hashMap = new HashMap<>();
+        n = in.nextInt();
     }
 }
