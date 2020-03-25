@@ -41,6 +41,11 @@ public class YoGiOh {
         }
     }
 
+    static InputStream inputStream = System.in;
+    static OutputStream outputStream = System.out;
+    static InputReader in = new InputReader(inputStream);
+    static PrintWriter out = new PrintWriter(outputStream);
+
     /*
     |   score   |   points  |   index   |
     |   2:0     |   3       |   0       |
@@ -63,34 +68,35 @@ public class YoGiOh {
     */
 
     static int[][] result = {{3, 0}, {2, 1}, {1, 1}, {1, 2}, {0, 3}};
-    static String[] score={"2:0","2:1","1:1","1:2","0:2"};
+    static String[] score = {"2:0", "2:1", "1:1", "1:2", "0:2"};
 
-    static HashMap<int[], Integer> hashMap;
+    static HashMap<Integer, Long> hashMap;
     static int n;
 
-    static int dfs(int[] players, String[][] scores, int a, int b, int r) {
+    static long dfs(int[] players, String[][] scores, int a, int b, int r, int rest) {
         players[a] -= result[r][0];
         players[b] -= result[r][1];
         scores[a][b] = score[r];
-        scores[b][a] = score[4-r];
+        scores[b][a] = score[4 - r];
 
         int[] cp = players.clone();
         Arrays.sort(cp);
-        if (cp[0] < 0) {
+        int key = Arrays.hashCode(new int[]{Arrays.hashCode(cp), rest});
+        if (cp[0] < 0 || (cp[n - 1] > 0 && rest == 0) || (b == n - 1 && players[a] != 0)) {
             return 0;
-        } else if (cp[n - 1] == 0 && a == n - 2) {
+        } else if (cp[n - 1] == 0 && rest == 0) {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    System.out.print(scores[i][j] + " ");
+                    out.print(scores[i][j] + " ");
                 }
-                System.out.println();
+                out.println();
             }
             System.out.println();
             return 1;
         } else {
-            if (hashMap.containsKey(cp)) {
-                System.out.println(Arrays.toString(cp) + " " + hashMap.get(cp));
-                return hashMap.get(cp);
+            if (hashMap.containsKey(key)) {
+//                out.println(Arrays.toString(cp) + " " + hashMap.get(key));
+                return hashMap.get(key);
             } else {
                 b++;
                 if (b == n) {
@@ -100,14 +106,15 @@ public class YoGiOh {
                     }
                     b = a + 1;
                 }
-                int cnt = dfs(players.clone(), scores.clone(), a, b, 0) +
-                        dfs(players.clone(), scores.clone(), a, b, 1) +
-                        dfs(players.clone(), scores.clone(), a, b, 2) +
-                        dfs(players.clone(), scores.clone(), a, b, 3) +
-                        dfs(players.clone(), scores.clone(), a, b, 4);
-                hashMap.put(cp, cnt);
-//                if (hashMap.containsKey(cp)) {
-//                    System.out.println(Arrays.toString(cp) + " " + hashMap.get(cp));
+                long cnt = dfs(players.clone(), scores.clone(), a, b, 0, rest - 1) % 998244353 +
+                        dfs(players.clone(), scores.clone(), a, b, 1, rest - 1) % 998244353 +
+                        dfs(players.clone(), scores.clone(), a, b, 2, rest - 1) % 998244353 +
+                        dfs(players.clone(), scores.clone(), a, b, 3, rest - 1) % 998244353 +
+                        dfs(players.clone(), scores.clone(), a, b, 4, rest - 1) % 998244353;
+                cnt %= 998244353;
+                hashMap.put(key, cnt);
+//                if (hashMap.containsKey(key)) {
+//                    out.println(Arrays.toString(cp) + " " + hashMap.get(key));
 //                }
                 return cnt;
             }
@@ -115,10 +122,10 @@ public class YoGiOh {
     }
 
     public static void main(String[] args) {
-        InputStream inputStream = System.in;
-        OutputStream outputStream = System.out;
-        InputReader in = new InputReader(inputStream);
-        PrintWriter out = new PrintWriter(outputStream);
+//        InputStream inputStream = System.in;
+//        OutputStream outputStream = System.out;
+//        InputReader in = new InputReader(inputStream);
+//        PrintWriter out = new PrintWriter(outputStream);
         hashMap = new HashMap<>();
         n = in.nextInt();
         int[] players = new int[n];
@@ -126,11 +133,42 @@ public class YoGiOh {
             players[i] = in.nextInt();
         }
         String[][] scores = new String[n][n];
-        out.println(dfs(players.clone(), scores, 0, 1, 0) +
-                dfs(players.clone(), scores, 0, 1, 1) +
-                dfs(players.clone(), scores, 0, 1, 2) +
-                dfs(players.clone(), scores, 0, 1, 3) +
-                dfs(players.clone(), scores, 0, 1, 4));
+        int rest = n * (n - 1) / 2 - 1;
+        long start = System.currentTimeMillis();
+        long result = dfs(players.clone(), scores, 0, 1, 0, rest) % 998244353;
+        long end = System.currentTimeMillis();
+        out.println(end - start);
+
+        start = System.currentTimeMillis();
+        result += dfs(players.clone(), scores, 0, 1, 4, rest) % 998244353;
+        result %= 998244353;
+        end = System.currentTimeMillis();
+        out.println(end - start);
+
+        start = System.currentTimeMillis();
+        result += dfs(players.clone(), scores, 0, 1, 1, rest) % 998244353;
+        result %= 998244353;
+        end = System.currentTimeMillis();
+        out.println(end - start);
+
+        start = System.currentTimeMillis();
+        result += dfs(players.clone(), scores, 0, 1, 3, rest) % 998244353;
+        result %= 998244353;
+        end = System.currentTimeMillis();
+        out.println(end - start);
+
+        start = System.currentTimeMillis();
+        result += dfs(players.clone(), scores, 0, 1, 2, rest) % 998244353;
+        result %= 998244353;
+        end = System.currentTimeMillis();
+        out.println(end - start);
+
+//        out.println((dfs(players.clone(), scores, 0, 1, 0, rest) % 998244353 +
+//                dfs(players.clone(), scores, 0, 1, 1, rest) % 998244353 +
+//                dfs(players.clone(), scores, 0, 1, 2, rest) % 998244353 +
+//                dfs(players.clone(), scores, 0, 1, 3, rest) % 998244353 +
+//                dfs(players.clone(), scores, 0, 1, 4, rest) % 998244353) % 998244353);
+        out.println(result);
         out.close();
     }
 }
