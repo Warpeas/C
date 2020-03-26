@@ -69,49 +69,61 @@ public class YoGiOh {
 
     static int[][] result = {{3, 0}, {2, 1}, {1, 1}, {1, 2}, {0, 3}};
     static HashMap<Integer, Long> hashMap;
-    static int n;
+    static int n, tie;
 
     static long dfs(int[] players, int a, int b, int r, int rest) {
         players[a] -= result[r][0];
         players[b] -= result[r][1];
 
-//        int[] cp = Arrays.copyOfRange(players, a, n);
-//        Arrays.sort(cp);
-//        int key = Arrays.hashCode(new int[]{Arrays.hashCode(cp), rest});
-//        int key = Arrays.hashCode(new int[]{Arrays.hashCode(players), rest});
-        int[] cp = Arrays.copyOfRange(players, a, n);
-        Arrays.sort(cp);
-        int key = Arrays.hashCode(new int[]{Arrays.hashCode(cp), rest});
-        if (players[a] < 0 || (players[a] > 0 && players[b] < 0) || (b == n - 1 && players[a] != 0) || (players[a] > 3 * (n - b - 1)) || (players[b] > 3 * (n - a - 1))) {
+        boolean lastRace = (b == (n - 1));
+        if (players[a] < 0 || players[b] < 0 ||
+                (lastRace && players[a] != 0) || (players[a] > 3 * (n - b - 1)) || (players[b] > 3 * (n - a - 1)) || rest < tie) {
+            players[a] += result[r][0];
+            players[b] += result[r][1];
             return 0;
-        } else if (players[n - 2] == 0 && players[n - 1] == 0 && rest == 0) {
-            return 1;
-        } else {
-            if (hashMap.containsKey(key)) {
-                return hashMap.get(key);
-            } else {
-                b++;
-                if (b == n) {
-                    a++;
-                    if (a == n - 1) {
-                        return 0;
-                    }
-                    b = a + 1;
-                }
-                long cnt = dfs(players.clone(), a, b, 0, rest - 1) % 998244353 +
-                        dfs(players.clone(), a, b, 1, rest - 1) % 998244353 +
-                        dfs(players.clone(), a, b, 2, rest - 1) % 998244353 +
-                        dfs(players.clone(), a, b, 3, rest - 1) % 998244353 +
-                        dfs(players.clone(), a, b, 4, rest - 1) % 998244353;
-                cnt %= 998244353;
-                if (b == a + 1)
-                    hashMap.put(key, cnt);
-//                if (hashMap.containsKey(key)) {
-//                    out.println(Arrays.toString(cp) + " " + hashMap.get(key));
-//                }
-                return cnt;
-            }
         }
+        if (players[n - 2] == 0 && players[n - 1] == 0 && rest == 0) {
+            players[a] += result[r][0];
+            players[b] += result[r][1];
+            return 1;
+        }
+
+        int[] copy = Arrays.copyOfRange(players, a, n);
+        Arrays.sort(copy);
+        int key = Arrays.hashCode(new int[]{Arrays.hashCode(copy), rest});
+        if (hashMap.containsKey(key)) {
+            players[a] += result[r][0];
+            players[b] += result[r][1];
+            return hashMap.get(key);
+        }
+
+        int a1, b1;
+        if (lastRace) {
+            if (a == n - 2) {
+                players[a] += result[r][0];
+                players[b] += result[r][1];
+                return 0;
+            }
+            a1 = a + 1;
+            b1 = a1 + 1;
+        } else {
+            a1 = a;
+            b1 = b + 1;
+        }
+
+        long cnt = dfs(players, a1, b1, 0, rest - 1) % 998244353;
+        cnt += dfs(players, a1, b1, 1, rest - 1) % 998244353;
+        tie--;
+        cnt += dfs(players, a1, b1, 2, rest - 1) % 998244353;
+        tie++;
+        cnt += dfs(players, a1, b1, 3, rest - 1) % 998244353;
+        cnt += dfs(players, a1, b1, 4, rest - 1) % 998244353;
+        cnt %= 998244353;
+
+        if (lastRace) hashMap.put(key, cnt);
+        players[a] += result[r][0];
+        players[b] += result[r][1];
+        return cnt;
     }
 
     public static void main(String[] args) {
@@ -124,10 +136,14 @@ public class YoGiOh {
             hashMap = new HashMap<>();
             n = in.nextInt();
             int[] players = new int[n];
+            int cnt = 0;
             for (int i = 0; i < n; i++) {
                 players[i] = in.nextInt();
+                cnt += players[i];
             }
+            Arrays.sort(players);
             int rest = n * (n - 1) / 2 - 1;
+            tie = 3 * (rest + 1) - cnt;
             long start = System.currentTimeMillis();
             long result = dfs(players.clone(), 0, 1, 0, rest) % 998244353;
             long end = System.currentTimeMillis();
@@ -152,6 +168,7 @@ public class YoGiOh {
             out.println(end - start);
 
             start = System.currentTimeMillis();
+            tie--;
             result += dfs(players.clone(), 0, 1, 2, rest) % 998244353;
             result %= 998244353;
             end = System.currentTimeMillis();
