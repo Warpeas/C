@@ -1,5 +1,5 @@
 #include <algorithm>
-// #include <fstream>
+#include <fstream>
 #include <iostream>
 
 using namespace std;
@@ -66,12 +66,13 @@ static day da[2000000] = {};
 
 void construct() {
   iostream::sync_with_stdio(false);
-  // ifstream fin;
-  // fin.open("input.txt");
-  // cin.rdbuf(fin.rdbuf());
+  cin.tie(0);
+  //  ifstream fin;
+  //  fin.open("input.txt");
+  //  cin.rdbuf(fin.rdbuf());
   cin >> n;
   long tmp;
-  day_s d[n];
+  day_s *d = new day_s[n]();
   for (int i = 0; i < n; i++) {
     cin >> tmp;
     da[i] = *new day(i, tmp);
@@ -91,6 +92,7 @@ void construct() {
   //   da[i].getNxt()
   //        << endl;
   // }
+  delete[] d;
 }
 long long calculate() {
   long long result = da[0].getValue();
@@ -121,13 +123,15 @@ long long calculate() {
 }
 
 int main() {
-  iostream::sync_with_stdio(false);
+  // iostream::sync_with_stdio(0);
+  // cin.tie(0);
+   cout.tie(0);
   construct();
   // for (int i = 0; i < n; i++) {
   //   cout << i << " " << da[i] << " " << da[i].getNxt() << " " <<
   //   da[i].getPre()
   //        << endl;
   // }
-  cout << calculate() << endl;
+  cout << calculate() << "\n";
   return 0;
 }

@@ -75,6 +75,15 @@
             "database": "/home/hunter/Downloads/filmdb.sqlite",
             "dialect": "SQLite",
             "name": "filmdb"
+        },
+        {
+            "database": "filmdb",
+            "dialect": "PostgreSQL",
+            "name": "localhost",
+            "password": "postgres",
+            "port": 5432,
+            "server": "localhost",
+            "username": "postgres"
         }
     ],
     "sqltools.useNodeRuntime": true, // 同上
