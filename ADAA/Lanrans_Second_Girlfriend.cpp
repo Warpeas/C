@@ -1,7 +1,7 @@
 #include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <map>
-#include <fstream>
 
 using namespace std;
 int n, t, maxTime;
@@ -30,12 +30,12 @@ map<int, interval> intervals;
 
 int isValidTime(int t, int time[], int end, trick *tricks) {
   int cnt, s, e;
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < n; ++i) {
     cnt = t;
     s = tricks[i].getStart();
     e = tricks[i].getEnd();
     int start = -1, end = -1;
-    for (int j = s - 1; j < e && cnt > 0; j++) {
+    for (int j = s - 1; j < e && cnt > 0; ++j) {
       if (time[j] != t) {
         if (start == -1) {
           start = j;
@@ -43,8 +43,8 @@ int isValidTime(int t, int time[], int end, trick *tricks) {
         cnt--;
         time[j] = t;
         end = j;
-      }else {
-        if(intervals.find(j)!=intervals.end()){
+      } else {
+        if (intervals.find(j) != intervals.end()) {
           j = intervals.find(j)->second.end;
         }
       }
@@ -53,7 +53,10 @@ int isValidTime(int t, int time[], int end, trick *tricks) {
       return 0;
     }
     if (start != -1) {
-      intervals.insert(pair<int, interval>(start, interval{start, end}));
+      interval tmp = interval{start, end};
+      for (int k = start; k < end; ++k) {
+        intervals.insert(pair<int, interval>(k, tmp));
+      }
     }
   }
   intervals.clear();
