@@ -120,6 +120,7 @@ public class YoGiOh {
 //        InputReader in = new InputReader(inputStream);
 //        PrintWriter out = new PrintWriter(outputStream);
         int t = in.nextInt();
+        t=1;
         for (int j = 0; j < t; j++) {
             hashMap = new HashMap<>();
             n = in.nextInt();
@@ -127,6 +128,7 @@ public class YoGiOh {
             for (int i = 0; i < n; i++) {
                 players[i] = in.nextInt();
             }
+            Arrays.sort(players);
             int rest = n * (n - 1) / 2 - 1;
             long start = System.currentTimeMillis();
             long result = dfs(players.clone(), 0, 1, 0, rest) % 998244353;
