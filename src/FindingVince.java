@@ -1,10 +1,11 @@
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 
 public class FindingVince {
     static int n;
     static vertex[] graph;
-    static HashMap<Integer, Long> dist;
+    static long[] dist;
     static InputStream inputStream = System.in;
     static OutputStream outputStream = System.out;
     static InputReader in = new InputReader(inputStream);
@@ -12,7 +13,7 @@ public class FindingVince {
     
     static class vertex {
         int index;
-        int time, pre;
+        int pre;
         int a, b;
         HashMap<Integer, Integer> path;
         
@@ -22,88 +23,45 @@ public class FindingVince {
         }
     }
     
-    static int minDistance(HashMap<Integer, Long> dist, Boolean[] sptSet) {
+    static int minDistance(long[] dist, Boolean[] sptSet) {
         double min = Double.MAX_VALUE;
         int min_index = -1;
         for (int v = 0; v < n; v++)
-            if (!sptSet[v] && dist.get(v) <= min) {
-                min = dist.get(v);
+            if (!sptSet[v] && dist[v] <= min) {
+                min = dist[v];
                 min_index = v;
             }
         return min_index;
     }
     
     static long printSolution() {
-//        long result = 1;
-//        vertex s = graph[n - 1];
-//        vertex e;
-//        for (int i = 1; i < n; i++) {
-//            if (s.index != 0) {
-//                e = graph[s.pre];
-//                result *= (e.path.get(s.index) % 19260817);
-//                result %= 19260817;
-//                s = graph[s.pre];
-//            }
-//        }
-//        return result;
-        return dist.get(n - 1);
-    }
-    
-    static class comparator implements Comparator<Integer> {
-        Map<Integer, Long> base;
-        
-        public comparator(Map<Integer, Long> base) {
-            this.base = base;
-        }
-        
-        public int compare(Integer a, Integer b) {
-            if (base.get(a) >= base.get(b)) {
-                return -1;
-            } else {
-                return 1;
-            } // returning 0 would merge keys
-        }
-    }
-    
-    public static <K, V extends Comparable<? super V>> HashMap<K, V> sortByValue(Map<K, V> map) {
-        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
-        list.sort(Map.Entry.comparingByValue());
-        
-        HashMap<K, V> result = new LinkedHashMap<>();
-        for (Map.Entry<K, V> entry : list) {
-            result.put(entry.getKey(), entry.getValue());
-        }
-        
-        return result;
+        return dist[n - 1];
     }
     
     static void dijkstra(int src) {
-        graph[src].time = 0;
-        comparator cmp = new comparator(dist);
-        dist = new HashMap<>();
+        dist = new long[n];
         Boolean[] sptSet = new Boolean[n];
         // Initialize all distances as INFINITE and stpSet[] as false
         for (int i = 0; i < n; i++) {
-            dist.put(i, Long.MAX_VALUE);
+            dist[i] = Long.MAX_VALUE;
             sptSet[i] = false;
         }
-        int diff, actual;
-        dist.replace(src, (long) 0);
+        long diff, actual;
+        dist[src] = 0;
         // Find shortest path for all vertices
         for (int cnt = 0; cnt < n - 1; cnt++) {
-            dist = sortByValue(dist);
             int u = minDistance(dist, sptSet);
             sptSet[u] = true;
             vertex v = graph[u];
             
             for (int k : v.path.keySet()) {
-                diff = (v.time + v.path.get(k)) % (graph[k].a + graph[k].b);
+                diff = (dist[u] + v.path.get(k)) % (graph[k].a + graph[k].b);
                 actual = v.path.get(k);
                 if (diff < graph[k].a) {
                     actual += graph[k].a - diff;
                 }
-                if (!sptSet[k] && dist.get(u) != Double.MAX_VALUE && dist.get(u) + actual < dist.get(k)) {
-                    dist.replace(k, dist.get(u) + actual);
+                if (!sptSet[k] && dist[u] != Long.MAX_VALUE && dist[u] + actual < dist[k]) {
+                    dist[k] = dist[u] + actual;
                     graph[k].pre = u;
                 }
             }
