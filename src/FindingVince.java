@@ -4,11 +4,7 @@ import java.util.*;
 public class FindingVince {
     static int n;
     static vertex[] graph;
-    //    static long[] dist;
-    static Map<Integer, Long> dist;
-    static PriorityQueue<Map.Entry<Integer, Long>> queue = new PriorityQueue<>(
-            (o1, o2) -> (int) (Math.sqrt(o1.getValue() - o2.getValue()))
-    );
+    static HashMap<Integer, Long> dist;
     static InputStream inputStream = System.in;
     static OutputStream outputStream = System.out;
     static InputReader in = new InputReader(inputStream);
@@ -26,22 +22,15 @@ public class FindingVince {
         }
     }
     
-    static int minDistance(Boolean[] sptSet) {
-//        double min = Double.MAX_VALUE;
-//        int min_index = -1;
-//        for (int v = 0; v < n; v++)
-//            if (!sptSet[v] && dist[v] <= min) {
-//                min = dist[v];
-//                min_index = v;
-//            }
-//        return min_index;
-        int k;
-        do {
-            assert queue.peek() != null;
-            k = queue.peek().getKey();
-            queue.remove();
-        } while (sptSet[k]);
-        return k;
+    static int minDistance(HashMap<Integer, Long> dist, Boolean[] sptSet) {
+        double min = Double.MAX_VALUE;
+        int min_index = -1;
+        for (int v = 0; v < n; v++)
+            if (!sptSet[v] && dist.get(v) <= min) {
+                min = dist.get(v);
+                min_index = v;
+            }
+        return min_index;
     }
     
     static long printSolution() {
@@ -60,8 +49,37 @@ public class FindingVince {
         return dist.get(n - 1);
     }
     
+    static class comparator implements Comparator<Integer> {
+        Map<Integer, Long> base;
+        
+        public comparator(Map<Integer, Long> base) {
+            this.base = base;
+        }
+        
+        public int compare(Integer a, Integer b) {
+            if (base.get(a) >= base.get(b)) {
+                return -1;
+            } else {
+                return 1;
+            } // returning 0 would merge keys
+        }
+    }
+    
+    public static <K, V extends Comparable<? super V>> HashMap<K, V> sortByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+        
+        HashMap<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        
+        return result;
+    }
+    
     static void dijkstra(int src) {
         graph[src].time = 0;
+        comparator cmp = new comparator(dist);
         dist = new HashMap<>();
         Boolean[] sptSet = new Boolean[n];
         // Initialize all distances as INFINITE and stpSet[] as false
@@ -71,9 +89,10 @@ public class FindingVince {
         }
         int diff, actual;
         dist.replace(src, (long) 0);
+        // Find shortest path for all vertices
         for (int cnt = 0; cnt < n - 1; cnt++) {
-            queue.addAll(dist.entrySet());
-            int u = minDistance(sptSet);
+            dist = sortByValue(dist);
+            int u = minDistance(dist, sptSet);
             sptSet[u] = true;
             vertex v = graph[u];
             
@@ -88,7 +107,6 @@ public class FindingVince {
                     graph[k].pre = u;
                 }
             }
-            queue.clear();
         }
     }
     
