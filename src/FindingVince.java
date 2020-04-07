@@ -13,7 +13,6 @@ public class FindingVince {
     
     static class vertex {
         int index;
-        int pre;
         int a, b;
         HashMap<Integer, Integer> path;
         
@@ -62,7 +61,6 @@ public class FindingVince {
                 }
                 if (!sptSet[k] && dist[u] != Long.MAX_VALUE && dist[u] + actual < dist[k]) {
                     dist[k] = dist[u] + actual;
-                    graph[k].pre = u;
                 }
             }
         }
