@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class TheGreatMystery {
+public class TheGreatMystery_pq {
     static InputStream inputStream = System.in;
     static OutputStream outputStream = System.out;
     static InputReader in = new InputReader(inputStream);
@@ -15,21 +15,21 @@ public class TheGreatMystery {
             if (o == null || getClass() != o.getClass()) return false;
             node node = (node) o;
             return x == node.x &&
-                    y == node.y;
+                    y == node.y &&
+                    w == node.w;
         }
         
         int x, y;
-        int w, s;
+        int w;
         
         node(int x, int y, int w) {
             this.x = x;
             this.y = y;
             this.w = w;
-            s = -1;
         }
     }
     
-    static class path implements Comparable<path> {
+    static class path {
         int x1, y1;
         int x2, y2;
         int w;
@@ -41,60 +41,28 @@ public class TheGreatMystery {
             this.y2 = y2;
             this.w = w;
         }
-        
-        @Override
-        public int compareTo(path o) {
-            return this.w - o.w;
-        }
     }
     
     static Set<node> originalSet;
-    static node[][] nodes;
+    static int[][] nodes;
+    static int[][] set;
     static Map<Integer, Set<node>> setMap = new HashMap<>();
-    static path[] paths;
+    static PriorityQueue<Map.Entry<Integer, path>> paths = new PriorityQueue<>(
+            Comparator.comparingInt(Map.Entry::getKey)
+    );
     
     static int addToSet() {
-        int result = 0, s1, s2, cnt = 0;
-        for (int i = 0; i < paths.length && !setMap.entrySet().containsAll(originalSet); i++) {
+        int result = 0;
+        while (!setMap.entrySet().containsAll(originalSet)) {
+            assert paths.peek() != null;
             int x1, x2, y1, y2;
-            x1 = paths[i].x1;
-            y1 = paths[i].y1;
-            x2 = paths[i].x2;
-            y2 = paths[i].y2;
-            s1 = nodes[x1][y1].s;
-            s2 = nodes[x2][y2].s;
-            if (s1 != s2 && s1 != -1 && s2 != -1) {
-                result += paths[i].w;
-                if (s1 > s2) {
-                    for (node n :
-                            setMap.get(s1)) {
-                        n.s = s2;
-                    }
-                    setMap.get(s2).addAll(setMap.get(s1));
-                    setMap.remove(s1);
-                } else {
-                    for (node n :
-                            setMap.get(s2)) {
-                        n.s = s1;
-                    }
-                    setMap.get(s1).addAll(setMap.get(s2));
-                    setMap.remove(s2);
-                }
-            } else if (s1 == -1 && s2 != -1) {
-                result += paths[i].w;
-                setMap.get(s2).add(nodes[x1][y1]);
-                nodes[x1][y1].s = s2;
-            } else if (s1 != -1 && s2 == -1) {
-                result += paths[i].w;
-                setMap.get(s1).add(nodes[x2][y2]);
-                nodes[x2][y2].s = s1;
-            } else if (s1 == -1) {
-                result += paths[i].w;
-                setMap.put(cnt, new HashSet<>());
-                setMap.get(cnt).add(nodes[x1][y1]);
-                setMap.get(cnt).add(nodes[x2][y2]);
-                nodes[x1][y1].s = cnt;
-                nodes[x2][y2].s = cnt++;
+            x1 = paths.peek().getValue().x1;
+            y1 = paths.peek().getValue().y1;
+            x2 = paths.peek().getValue().x2;
+            y2 = paths.peek().getValue().y2;
+            if (set[x1][y1] != 0 && set[x1][y1] != set[x2][y2]) {
+                result += paths.peek().getKey();
+                
             }
         }
         return result;
@@ -103,34 +71,32 @@ public class TheGreatMystery {
     public static void main(String[] args) {
         n = in.nextInt();
         m = in.nextInt();
-        nodes = new node[n][m];
+        nodes = new int[n][m];
+        set = new int[n][m];
         int w;
+//        comparator cmp = new comparator();
         originalSet = new HashSet<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 w = in.nextInt();
-                nodes[i][j] = new node(i, j, w);
-                originalSet.add(nodes[i][j]);
+                nodes[i][j] = w;
+                originalSet.add(new node(i, j, w));
             }
         }
-        int weight;
-        paths = new path[n * (m - 1) + m * (n - 1)];
-        int cnt = 0;
+        Map<Integer, path> p = new HashMap<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if (i + 1 < n) {
-                    weight = nodes[i][j].w ^ nodes[i + 1][j].w;
-                    paths[cnt++] = new path(i, j, i + 1, j, weight);
+                    int weight = nodes[i][j] ^ nodes[i + 1][j];
+                    p.put(weight, new path(i, j, i + 1, j, weight));
                 }
                 if (j + 1 < m) {
-                    weight = nodes[i][j].w ^ nodes[i][j + 1].w;
-                    paths[cnt++] = new path(i, j, i, j + 1, weight);
+                    int weight = nodes[i][j] ^ nodes[i][j + 1];
+                    p.put(weight, new path(i, j, i, j + 1, weight));
                 }
             }
         }
-        Arrays.sort(paths);
-        out.println(addToSet());
-        out.close();
+        paths.addAll(p.entrySet());
     }
     
     static class InputReader {
