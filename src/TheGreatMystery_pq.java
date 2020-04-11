@@ -15,21 +15,21 @@ public class TheGreatMystery_pq {
             if (o == null || getClass() != o.getClass()) return false;
             node node = (node) o;
             return x == node.x &&
-                    y == node.y &&
-                    w == node.w;
+                    y == node.y;
         }
         
         int x, y;
-        int w;
+        int w, s;
         
         node(int x, int y, int w) {
             this.x = x;
             this.y = y;
             this.w = w;
+            s = -1;
         }
     }
     
-    static class path {
+    static class path implements Comparable<path> {
         int x1, y1;
         int x2, y2;
         int w;
@@ -41,62 +41,99 @@ public class TheGreatMystery_pq {
             this.y2 = y2;
             this.w = w;
         }
+        
+        @Override
+        public int compareTo(path o) {
+            return w - o.w;
+        }
     }
     
     static Set<node> originalSet;
-    static int[][] nodes;
-    static int[][] set;
+    static node[][] nodes;
     static Map<Integer, Set<node>> setMap = new HashMap<>();
-    static PriorityQueue<Map.Entry<Integer, path>> paths = new PriorityQueue<>(
-            Comparator.comparingInt(Map.Entry::getKey)
-    );
+    static PriorityQueue<path> paths = new PriorityQueue<>();
     
-    static int addToSet() {
-        int result = 0;
-        while (!setMap.entrySet().containsAll(originalSet)) {
+    static long addToSet() {
+        long result = 0;
+        int s1, s2, cnt = 0;
+        while (setMap.entrySet().isEmpty() || !setMap.entrySet().iterator().next().getValue().containsAll(originalSet)) {
             assert paths.peek() != null;
             int x1, x2, y1, y2;
-            x1 = paths.peek().getValue().x1;
-            y1 = paths.peek().getValue().y1;
-            x2 = paths.peek().getValue().x2;
-            y2 = paths.peek().getValue().y2;
-            if (set[x1][y1] != 0 && set[x1][y1] != set[x2][y2]) {
-                result += paths.peek().getKey();
-                
+            x1 = paths.peek().x1;
+            y1 = paths.peek().y1;
+            x2 = paths.peek().x2;
+            y2 = paths.peek().y2;
+            s1 = nodes[x1][y1].s;
+            s2 = nodes[x2][y2].s;
+            if (s1 != s2 && s1 != -1 && s2 != -1) {
+                result += paths.peek().w;
+                if (s1 > s2) {
+                    for (node n :
+                            setMap.get(s1)) {
+                        n.s = s2;
+                    }
+                    setMap.get(s2).addAll(setMap.get(s1));
+                    setMap.remove(s1);
+                } else {
+                    for (node n :
+                            setMap.get(s2)) {
+                        n.s = s1;
+                    }
+                    setMap.get(s1).addAll(setMap.get(s2));
+                    setMap.remove(s2);
+                }
+            } else if (s1 == -1 && s2 != -1) {
+                result += paths.peek().w;
+                setMap.get(s2).add(nodes[x1][y1]);
+                nodes[x1][y1].s = s2;
+            } else if (s1 != -1 && s2 == -1) {
+                result += paths.peek().w;
+                setMap.get(s1).add(nodes[x2][y2]);
+                nodes[x2][y2].s = s1;
+            } else if (s1 == -1) {
+                result += paths.peek().w;
+                setMap.put(cnt, new HashSet<>());
+                setMap.get(cnt).add(nodes[x1][y1]);
+                setMap.get(cnt).add(nodes[x2][y2]);
+                nodes[x1][y1].s = cnt;
+                nodes[x2][y2].s = cnt++;
             }
+            paths.remove();
         }
         return result;
     }
     
     public static void main(String[] args) {
+        long start = System.currentTimeMillis();
         n = in.nextInt();
         m = in.nextInt();
-        nodes = new int[n][m];
-        set = new int[n][m];
+        nodes = new node[n][m];
         int w;
-//        comparator cmp = new comparator();
         originalSet = new HashSet<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 w = in.nextInt();
-                nodes[i][j] = w;
-                originalSet.add(new node(i, j, w));
+                nodes[i][j] = new node(i, j, w);
+                originalSet.add(nodes[i][j]);
             }
         }
-        Map<Integer, path> p = new HashMap<>();
+        int weight;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if (i + 1 < n) {
-                    int weight = nodes[i][j] ^ nodes[i + 1][j];
-                    p.put(weight, new path(i, j, i + 1, j, weight));
+                    weight = nodes[i][j].w ^ nodes[i + 1][j].w;
+                    paths.add(new path(i, j, i + 1, j, weight));
                 }
                 if (j + 1 < m) {
-                    int weight = nodes[i][j] ^ nodes[i][j + 1];
-                    p.put(weight, new path(i, j, i, j + 1, weight));
+                    weight = nodes[i][j].w ^ nodes[i][j + 1].w;
+                    paths.add(new path(i, j, i, j + 1, weight));
                 }
             }
         }
-        paths.addAll(p.entrySet());
+        out.println(addToSet());
+        long end = System.currentTimeMillis();
+        out.println(end - start);
+        out.close();
     }
     
     static class InputReader {

@@ -48,15 +48,15 @@ public class TheGreatMystery {
         }
     }
     
-    static Set<node> originalSet;
     static node[][] nodes;
     static Map<Integer, Set<node>> setMap = new HashMap<>();
     static path[] paths;
     
-    static int addToSet() {
-        int result = 0, s1, s2, cnt = 0;
-        for (int i = 0; i < paths.length && !setMap.entrySet().containsAll(originalSet); i++) {
-            int x1, x2, y1, y2;
+    static long addToSet() {
+        long result = 0;
+        int s1, s2, cnt = 0;
+        int x1, x2, y1, y2;
+        for (int i = 0; i < paths.length && setMap.entrySet().size() != n * m; i++) {
             x1 = paths[i].x1;
             y1 = paths[i].y1;
             x2 = paths[i].x2;
@@ -101,16 +101,15 @@ public class TheGreatMystery {
     }
     
     public static void main(String[] args) {
+        long start = System.currentTimeMillis();
         n = in.nextInt();
         m = in.nextInt();
         nodes = new node[n][m];
         int w;
-        originalSet = new HashSet<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 w = in.nextInt();
                 nodes[i][j] = new node(i, j, w);
-                originalSet.add(nodes[i][j]);
             }
         }
         int weight;
@@ -130,6 +129,8 @@ public class TheGreatMystery {
         }
         Arrays.sort(paths);
         out.println(addToSet());
+        long end = System.currentTimeMillis();
+        out.println(end - start);
         out.close();
     }
     
