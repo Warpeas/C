@@ -1,4 +1,3 @@
-import javafx.util.Pair;
 
 import java.io.*;
 import java.util.*;
@@ -29,7 +28,6 @@ public class TheGreatMystery {
         }
     }
     
-    static int[][] weight;
     static int[][] s;
     static Map<Integer, Set<Integer>> setMap = new HashMap<>();
     static path[] paths;
@@ -86,26 +84,21 @@ public class TheGreatMystery {
         long start = System.currentTimeMillis();
         n = in.nextInt();
         m = in.nextInt();
-        weight = new int[n][m];
         s = new int[n][m];
-        int w;
+        int w, cnt = 0;
+        int[][] weight = new int[2][m];
+        paths = new path[n * (m - 1) + m * (n - 1)];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 w = in.nextInt();
-                weight[i][j] = w;
-            }
-        }
-        paths = new path[n * (m - 1) + m * (n - 1)];
-        int cnt = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (i + 1 < n) {
-                    w = weight[i][j] ^ weight[i + 1][j];
-                    paths[cnt++] = new path(i, j, i + 1, j, w);
+                weight[i % 2][j] = w;
+                if (i > 0) {
+                    w = weight[(i - 1) % 2][j] ^ weight[i % 2][j];
+                    paths[cnt++] = new path(i - 1, j, i, j, w);
                 }
-                if (j + 1 < m) {
-                    w = weight[i][j] ^ weight[i][j + 1];
-                    paths[cnt++] = new path(i, j, i, j + 1, w);
+                if (j > 0) {
+                    w = weight[i % 2][j - 1] ^ weight[i % 2][j];
+                    paths[cnt++] = new path(i, j - 1, i, j, w);
                 }
             }
         }
