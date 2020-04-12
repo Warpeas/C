@@ -15,8 +15,8 @@ public class TheGreatMystery {
         int w;
         
         public path(int x1, int y1, int x2, int y2, int w) {
-            index1 = x1 * n + y1 + 1;
-            index2 = x2 * n + y2 + 1;
+            index1 = x1 * m + y1 + 1;
+            index2 = x2 * m + y2 + 1;
             this.w = w;
         }
         
