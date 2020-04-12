@@ -8,6 +8,7 @@ public class TheGreatMystery {
     static InputReader in = new InputReader(inputStream);
     static PrintWriter out = new PrintWriter(outputStream);
     static int n, m;
+    static int[] pre;
     
     static class path implements Comparable<path> {
         int x1, y1;
@@ -31,6 +32,21 @@ public class TheGreatMystery {
     static int[][] s;
     static Map<Integer, Set<Integer>> setMap = new HashMap<>();
     static path[] paths;
+    
+    static int find(int x) {
+        if (x == pre[x]) {
+            return x;
+        } else {
+            return pre[x] = find(pre[x]);
+        }
+    }
+    
+    void join(int u, int v) {
+        if (find(u) == find(v)) {
+            return;
+        }
+        pre[find(u)] = find(v);
+    }
     
     static long addToSet() {
         long result = 0;
@@ -85,6 +101,7 @@ public class TheGreatMystery {
         n = in.nextInt();
         m = in.nextInt();
         s = new int[n][m];
+        pre = new int[n * m];
         int w, cnt = 0;
         int[][] weight = new int[2][m];
         paths = new path[n * (m - 1) + m * (n - 1)];
