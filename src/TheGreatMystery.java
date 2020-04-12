@@ -8,18 +8,15 @@ public class TheGreatMystery {
     static InputReader in = new InputReader(inputStream);
     static PrintWriter out = new PrintWriter(outputStream);
     static int n, m;
-    static int[] pre;
+    static int[] set;
     
     static class path implements Comparable<path> {
-        int x1, y1;
-        int x2, y2;
+        int index1, index2;
         int w;
         
         public path(int x1, int y1, int x2, int y2, int w) {
-            this.x1 = x1;
-            this.y1 = y1;
-            this.x2 = x2;
-            this.y2 = y2;
+            index1 = x1 * n + y1 + 1;
+            index2 = x2 * n + y2 + 1;
             this.w = w;
         }
         
@@ -29,68 +26,57 @@ public class TheGreatMystery {
         }
     }
     
-    static int[][] s;
-    static Map<Integer, Set<Integer>> setMap = new HashMap<>();
     static path[] paths;
     
+    //  find set
     static int find(int x) {
-        if (x == pre[x]) {
+        if (x == set[x]) {
             return x;
         } else {
-            return pre[x] = find(pre[x]);
+            return set[x] = find(set[x]);
         }
     }
     
-    void join(int u, int v) {
-        if (find(u) == find(v)) {
+    //  join two set
+    static void join(int s1, int s2) {
+        if (s1 == s2) {
             return;
         }
-        pre[find(u)] = find(v);
+        set[s1] = s2;
     }
     
     static long addToSet() {
         long result = 0;
-        int s1, s2, cnt = 1;
-        int x1, x2, y1, y2;
-        for (int i = 0; i < paths.length && setMap.entrySet().size() != n * m; i++) {
-            x1 = paths[i].x1;
-            y1 = paths[i].y1;
-            x2 = paths[i].x2;
-            y2 = paths[i].y2;
-            s1 = s[x1][y1];
-            s2 = s[x2][y2];
+        int cnt = 0, s_cnt = 0;
+        int u, v, s1, s2, w;
+        for (int i = 0; i < paths.length; i++) {
+            if (cnt == n * m && s_cnt == 1) {
+                break;
+            }
+            w = paths[i].w;
+            u = paths[i].index1;
+            v = paths[i].index2;
+            s1 = find(u);
+            s2 = find(v);
             if (s1 != s2 && s1 != 0 && s2 != 0) {
-                result += paths[i].w;
-                if (s1 > s2) {
-                    for (int p :
-                            setMap.get(s1)) {
-                        s[p / m][p % m] = s2;
-                    }
-                    setMap.get(s2).addAll(setMap.get(s1));
-                    setMap.remove(s1);
-                } else {
-                    for (int p :
-                            setMap.get(s2)) {
-                        s[p / m][p % m] = s1;
-                    }
-                    setMap.get(s1).addAll(setMap.get(s2));
-                    setMap.remove(s2);
-                }
+                s_cnt--;
+                result += w;
+                join(s1, s2);
             } else if (s1 == 0 && s2 != 0) {
-                result += paths[i].w;
-                setMap.get(s2).add(x1 * m + y1);
-                s[x1][y1] = s2;
-            } else if (s1 != 0 && s2 == 0) {
-                result += paths[i].w;
-                setMap.get(s1).add(x2 * m + y2);
-                s[x2][y2] = s1;
+                result += w;
+                cnt++;
+                set[u] = s2;
+            } else if (s2 == 0 && s1 != 0) {
+                result += w;
+                cnt++;
+                set[v] = s1;
             } else if (s1 == 0) {
-                result += paths[i].w;
-                setMap.put(cnt, new HashSet<>());
-                setMap.get(cnt).add(x1 * m + y1);
-                setMap.get(cnt).add(x2 * m + y2);
-                s[x1][y1] = cnt;
-                s[x2][y2] = cnt++;
+                s_cnt++;
+                result += w;
+                cnt++;
+                set[u] = u;
+                cnt++;
+                set[v] = u;
             }
         }
         return result;
@@ -100,8 +86,7 @@ public class TheGreatMystery {
         long start = System.currentTimeMillis();
         n = in.nextInt();
         m = in.nextInt();
-        s = new int[n][m];
-        pre = new int[n * m];
+        set = new int[n * m + 1];
         int w, cnt = 0;
         int[][] weight = new int[2][m];
         paths = new path[n * (m - 1) + m * (n - 1)];
