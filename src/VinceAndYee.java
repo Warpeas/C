@@ -26,8 +26,8 @@ public class VinceAndYee {
         }
     }
     
-    //    static path[] paths;
-    static PriorityQueue<path> paths;
+        static path[] paths;
+//    static PriorityQueue<path> paths;
     
     //  find set
     static int find(int x) {
@@ -50,18 +50,18 @@ public class VinceAndYee {
         long result = 0;
         int cnt = 0, s_cnt = 0;
         int u, v, s1, s2, w;
-//        for (int i = 0; i < paths.length; i++) {
-        while (!paths.isEmpty()) {
+        for (int i = 0; i < paths.length; i++) {
+//        while (!paths.isEmpty()) {
             if (cnt == n + 1 && s_cnt == 1) {
                 break;
             }
-            path p = paths.peek();
-            w = p.w;
-//            w = paths[i].w;
-            u = p.index1;
-//            u = paths[i].index1;
-            v = p.index2;
-//            v = paths[i].index2;
+//            path p = paths.peek();
+//            w = p.w;
+            w = paths[i].w;
+//            u = p.index1;
+            u = paths[i].index1;
+//            v = p.index2;
+            v = paths[i].index2;
             s1 = find(u);
             s2 = find(v);
             if (s1 != s2 && s1 != 0 && s2 != 0) {
@@ -84,29 +84,29 @@ public class VinceAndYee {
                 cnt++;
                 set[v] = u;
             }
-            paths.remove();
+//            paths.remove();
         }
         return result;
     }
     
     public static void main(String[] args) {
-        long start = System.currentTimeMillis();
+//        long start = System.currentTimeMillis();
         n = in.nextInt();
         set = new int[n + 2];
-        int w;
-        paths = new PriorityQueue<>();
-//        path[] p = new path[n * (n + 1) / 2];
+        int w,cnt=0;
+//        paths = new PriorityQueue<>();
+        paths = new path[n * (n + 1) / 2];
         for (int i = 0; i < n; i++) {
             for (int j = i; j < n; j++) {
                 w = in.nextInt();
-//                p[cnt++] = new path(i + 1, j + 2, w);
-                paths.add(new path(i + 1, j + 2, w));
+                paths[cnt++] = new path(i + 1, j + 2, w);
+//                paths.add(new path(i + 1, j + 2, w));
             }
         }
-//        Arrays.sort(paths);
+        Arrays.sort(paths);
         out.println(addToSet());
-        long end = System.currentTimeMillis();
-        out.println(end - start);
+//        long end = System.currentTimeMillis();
+//        out.println(end - start);
         out.close();
     }
     

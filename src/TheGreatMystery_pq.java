@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.util.*;
 
@@ -7,96 +8,77 @@ public class TheGreatMystery_pq {
     static InputReader in = new InputReader(inputStream);
     static PrintWriter out = new PrintWriter(outputStream);
     static int n, m;
-    
-    static class node {
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            node node = (node) o;
-            return x == node.x &&
-                    y == node.y;
-        }
-        
-        int x, y;
-        int w, s;
-        
-        node(int x, int y, int w) {
-            this.x = x;
-            this.y = y;
-            this.w = w;
-            s = -1;
-        }
-    }
+    static int[] set;
     
     static class path implements Comparable<path> {
-        int x1, y1;
-        int x2, y2;
+        int index1, index2;
         int w;
         
         public path(int x1, int y1, int x2, int y2, int w) {
-            this.x1 = x1;
-            this.y1 = y1;
-            this.x2 = x2;
-            this.y2 = y2;
+            index1 = x1 * m + y1 + 1;
+            index2 = x2 * m + y2 + 1;
             this.w = w;
         }
         
         @Override
         public int compareTo(path o) {
-            return w - o.w;
+            return this.w - o.w;
         }
     }
     
-    static Set<node> originalSet;
-    static node[][] nodes;
-    static Map<Integer, Set<node>> setMap = new HashMap<>();
-    static PriorityQueue<path> paths = new PriorityQueue<>();
+    static PriorityQueue<path> paths;
+    
+    //  find set
+    static int find(int x) {
+        if (x == set[x]) {
+            return x;
+        } else {
+            return set[x] = find(set[x]);
+        }
+    }
+    
+    //  join two set
+    static void join(int s1, int s2) {
+        if (s1 == s2) {
+            return;
+        }
+        set[s1] = s2;
+    }
     
     static long addToSet() {
         long result = 0;
-        int s1, s2, cnt = 0;
-        while (setMap.entrySet().isEmpty() || !setMap.entrySet().iterator().next().getValue().containsAll(originalSet)) {
-            assert paths.peek() != null;
-            int x1, x2, y1, y2;
-            x1 = paths.peek().x1;
-            y1 = paths.peek().y1;
-            x2 = paths.peek().x2;
-            y2 = paths.peek().y2;
-            s1 = nodes[x1][y1].s;
-            s2 = nodes[x2][y2].s;
-            if (s1 != s2 && s1 != -1 && s2 != -1) {
-                result += paths.peek().w;
-                if (s1 > s2) {
-                    for (node n :
-                            setMap.get(s1)) {
-                        n.s = s2;
-                    }
-                    setMap.get(s2).addAll(setMap.get(s1));
-                    setMap.remove(s1);
-                } else {
-                    for (node n :
-                            setMap.get(s2)) {
-                        n.s = s1;
-                    }
-                    setMap.get(s1).addAll(setMap.get(s2));
-                    setMap.remove(s2);
-                }
-            } else if (s1 == -1 && s2 != -1) {
-                result += paths.peek().w;
-                setMap.get(s2).add(nodes[x1][y1]);
-                nodes[x1][y1].s = s2;
-            } else if (s1 != -1 && s2 == -1) {
-                result += paths.peek().w;
-                setMap.get(s1).add(nodes[x2][y2]);
-                nodes[x2][y2].s = s1;
-            } else if (s1 == -1) {
-                result += paths.peek().w;
-                setMap.put(cnt, new HashSet<>());
-                setMap.get(cnt).add(nodes[x1][y1]);
-                setMap.get(cnt).add(nodes[x2][y2]);
-                nodes[x1][y1].s = cnt;
-                nodes[x2][y2].s = cnt++;
+        int cnt = 0, s_cnt = 0;
+        int u, v, s1, s2, w;
+//        for (int i = 0; i < paths.length; i++) {
+        while (!paths.isEmpty()){
+            if (cnt == n * m && s_cnt == 1) {
+                break;
+            }
+            path p = paths.peek();
+            w = p.w;
+            u = p.index1;
+            v = p.index2;
+            s1 = find(u);
+            s2 = find(v);
+            if (s1 != s2 && s1 != 0 && s2 != 0) {
+                s_cnt--;
+                result += w;
+                join(s1, s2);
+            } else if (s1 == 0 && s2 != 0) {
+                result += w;
+                cnt++;
+                set[u] = s2;
+            } else if (s2 == 0 && s1 != 0) {
+                result += w;
+                cnt++;
+                set[v] = s1;
+            } else if (s1 == 0) {
+                s_cnt++;
+                result += w;
+                cnt++;
+                set[u] = u;
+                cnt++;
+                set[v] = u;
             }
             paths.remove();
         }
@@ -104,35 +86,31 @@ public class TheGreatMystery_pq {
     }
     
     public static void main(String[] args) {
-        long start = System.currentTimeMillis();
+//        long start = System.currentTimeMillis();
         n = in.nextInt();
         m = in.nextInt();
-        nodes = new node[n][m];
+        set = new int[n * m + 1];
         int w;
-        originalSet = new HashSet<>();
+        int[][] weight = new int[2][m];
+        paths = new PriorityQueue<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 w = in.nextInt();
-                nodes[i][j] = new node(i, j, w);
-                originalSet.add(nodes[i][j]);
-            }
-        }
-        int weight;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (i + 1 < n) {
-                    weight = nodes[i][j].w ^ nodes[i + 1][j].w;
-                    paths.add(new path(i, j, i + 1, j, weight));
+                weight[i % 2][j] = w;
+                if (i > 0) {
+                    w = weight[(i - 1) % 2][j] ^ weight[i % 2][j];
+                    paths.add(new path(i - 1, j, i, j, w));
                 }
-                if (j + 1 < m) {
-                    weight = nodes[i][j].w ^ nodes[i][j + 1].w;
-                    paths.add(new path(i, j, i, j + 1, weight));
+                if (j > 0) {
+                    w = weight[i % 2][j - 1] ^ weight[i % 2][j];
+                    paths.add(new path(i, j - 1, i, j, w));
                 }
             }
         }
+//        Arrays.sort(paths);
         out.println(addToSet());
-        long end = System.currentTimeMillis();
-        out.println(end - start);
+//        long end = System.currentTimeMillis();
+//        out.println(end - start);
         out.close();
     }
     

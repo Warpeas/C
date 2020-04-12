@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.util.*;
 
@@ -7,6 +8,7 @@ public class VinceAndYee_pq {
     static InputReader in = new InputReader(inputStream);
     static PrintWriter out = new PrintWriter(outputStream);
     static int n;
+    static int[] set;
     
     static class path implements Comparable<path> {
         int index1, index2;
@@ -20,57 +22,67 @@ public class VinceAndYee_pq {
         
         @Override
         public int compareTo(path o) {
-            return w - o.w;
+            return this.w - o.w;
         }
     }
     
-    static int[] nodes;
-    static Set<Integer> originalSet;
-    static Map<Integer, Set<Integer>> setMap = new HashMap<>();
-    static PriorityQueue<path> paths = new PriorityQueue<>();
+    //    static path[] paths;
+    static PriorityQueue<path> paths;
+    
+    //  find set
+    static int find(int x) {
+        if (x == set[x]) {
+            return x;
+        } else {
+            return set[x] = find(set[x]);
+        }
+    }
+    
+    //  join two set
+    static void join(int s1, int s2) {
+        if (s1 == s2) {
+            return;
+        }
+        set[s1] = s2;
+    }
     
     static long addToSet() {
         long result = 0;
-        int s1, s2, cnt = 1;
-        while (setMap.entrySet().isEmpty() || !setMap.entrySet().iterator().next().getValue().containsAll(originalSet)) {
-            assert paths.peek() != null;
-            int n1, n2;
-            n1 = paths.peek().index1;
-            n2 = paths.peek().index2;
-            s1 = nodes[n1];
-            s2 = nodes[n2];
+        int cnt = 0, s_cnt = 0;
+        int u, v, s1, s2, w;
+//        for (int i = 0; i < paths.length; i++) {
+        while (!paths.isEmpty()) {
+            if (cnt == n + 1 && s_cnt == 1) {
+                break;
+            }
+            path p = paths.peek();
+            w = p.w;
+//            w = paths[i].w;
+            u = p.index1;
+//            u = paths[i].index1;
+            v = p.index2;
+//            v = paths[i].index2;
+            s1 = find(u);
+            s2 = find(v);
             if (s1 != s2 && s1 != 0 && s2 != 0) {
-                result += paths.peek().w;
-                if (s1 > s2) {
-                    for (int n :
-                            setMap.get(s1)) {
-                        nodes[n] = s2;
-                    }
-                    setMap.get(s2).addAll(setMap.get(s1));
-                    setMap.remove(s1);
-                } else {
-                    for (int n :
-                            setMap.get(s2)) {
-                        nodes[n] = s1;
-                    }
-                    setMap.get(s1).addAll(setMap.get(s2));
-                    setMap.remove(s2);
-                }
+                s_cnt--;
+                result += w;
+                join(s1, s2);
             } else if (s1 == 0 && s2 != 0) {
-                result += paths.peek().w;
-                setMap.get(s2).add(n1);
-                nodes[n1] = s2;
-            } else if (s1 != 0 && s2 == 0) {
-                result += paths.peek().w;
-                setMap.get(s1).add(n2);
-                nodes[n2] = s1;
+                result += w;
+                cnt++;
+                set[u] = s2;
+            } else if (s2 == 0 && s1 != 0) {
+                result += w;
+                cnt++;
+                set[v] = s1;
             } else if (s1 == 0) {
-                result += paths.peek().w;
-                setMap.put(cnt, new HashSet<>());
-                setMap.get(cnt).add(n1);
-                setMap.get(cnt).add(n2);
-                nodes[n1] = cnt;
-                nodes[n2] = cnt++;
+                s_cnt++;
+                result += w;
+                cnt++;
+                set[u] = u;
+                cnt++;
+                set[v] = u;
             }
             paths.remove();
         }
@@ -80,18 +92,18 @@ public class VinceAndYee_pq {
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
         n = in.nextInt();
-        originalSet = new HashSet<>();
-        for (int i = 0; i < n + 1; i++) {
-            originalSet.add(i);
-        }
-        int weight;
+        set = new int[n + 2];
+        int w;
+        paths = new PriorityQueue<>();
+//        path[] p = new path[n * (n + 1) / 2];
         for (int i = 0; i < n; i++) {
             for (int j = i; j < n; j++) {
-                weight = in.nextInt();
-                paths.add(new path(i, j + 1, weight));
+                w = in.nextInt();
+//                p[cnt++] = new path(i + 1, j + 2, w);
+                paths.add(new path(i + 1, j + 2, w));
             }
         }
-        nodes = new int[n + 1];
+//        Arrays.sort(paths);
         out.println(addToSet());
         long end = System.currentTimeMillis();
         out.println(end - start);
