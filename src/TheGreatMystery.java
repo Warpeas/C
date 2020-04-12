@@ -26,7 +26,7 @@ public class TheGreatMystery {
         }
     }
     
-    static path[] paths;
+    static PriorityQueue<path> paths;
     
     //  find set
     static int find(int x) {
@@ -49,13 +49,15 @@ public class TheGreatMystery {
         long result = 0;
         int cnt = 0, s_cnt = 0;
         int u, v, s1, s2, w;
-        for (int i = 0; i < paths.length; i++) {
+//        for (int i = 0; i < paths.length; i++) {
+        while (!paths.isEmpty()){
             if (cnt == n * m && s_cnt == 1) {
                 break;
             }
-            w = paths[i].w;
-            u = paths[i].index1;
-            v = paths[i].index2;
+            path p = paths.peek();
+            w = p.w;
+            u = p.index1;
+            v = p.index2;
             s1 = find(u);
             s2 = find(v);
             if (s1 != s2 && s1 != 0 && s2 != 0) {
@@ -78,6 +80,7 @@ public class TheGreatMystery {
                 cnt++;
                 set[v] = u;
             }
+            paths.remove();
         }
         return result;
     }
@@ -87,24 +90,24 @@ public class TheGreatMystery {
         n = in.nextInt();
         m = in.nextInt();
         set = new int[n * m + 1];
-        int w, cnt = 0;
+        int w;
         int[][] weight = new int[2][m];
-        paths = new path[n * (m - 1) + m * (n - 1)];
+        paths = new PriorityQueue<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 w = in.nextInt();
                 weight[i % 2][j] = w;
                 if (i > 0) {
                     w = weight[(i - 1) % 2][j] ^ weight[i % 2][j];
-                    paths[cnt++] = new path(i - 1, j, i, j, w);
+                    paths.add(new path(i - 1, j, i, j, w));
                 }
                 if (j > 0) {
                     w = weight[i % 2][j - 1] ^ weight[i % 2][j];
-                    paths[cnt++] = new path(i, j - 1, i, j, w);
+                    paths.add(new path(i, j - 1, i, j, w));
                 }
             }
         }
-        Arrays.sort(paths);
+//        Arrays.sort(paths);
         out.println(addToSet());
         long end = System.currentTimeMillis();
         out.println(end - start);
