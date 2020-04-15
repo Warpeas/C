@@ -65,7 +65,7 @@ public class match {
 }
 
 class People {
-    private String name;
+    private final String name;
     protected int ID;
     protected static int curID = 0;
     

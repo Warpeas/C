@@ -186,8 +186,8 @@ public class _2c {
 
     static class Reader {
         final private int BUFFER_SIZE = 0x10000;
-        private DataInputStream din;
-        private byte[] buffer;
+        private final DataInputStream din;
+        private final byte[] buffer;
         private int bufferPointer, bytesRead;
 
         public Reader() {
