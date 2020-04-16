@@ -9,6 +9,9 @@ public class TheMaximumIncome_ST {
     static PrintWriter out = new PrintWriter(outputStream);
     static int n;
     static int[] set;
+    static int maxEndTime;
+    static int[] pay;
+    static int[] time;
 
     static class path implements Comparable<path> {
         int index1, index2;
@@ -26,96 +29,36 @@ public class TheMaximumIncome_ST {
         }
     }
 
-    static PriorityQueue<path> paths;
+    static path[] paths;
 
-    //  find set
-    static int find(int x) {
-        if (x == set[x]) {
-            return x;
-        } else {
-            return set[x] = find(set[x]);
-        }
-    }
-
-    //  join two set
-    static void join(int s1, int s2) {
-        if (s1 == s2) {
-            return;
-        }
-        set[s1] = s2;
-    }
-
-    static long addToSet() {
-        long result = 0;
-        int cnt = 0, s_cnt = 0;
-        int u, v, s1, s2, w;
-//        for (int i = 0; i < paths.length; i++) {
-        while (!paths.isEmpty()) {
-            if (cnt == n + 1 && s_cnt == 1) {
-                break;
-            }
-            path p = paths.poll();
-            w = p.w;
-            u = p.index1;
-            v = p.index2;
-            s1 = find(u);
-            s2 = find(v);
-            if (s1 != s2 && s1 != 0 && s2 != 0) {
-                s_cnt--;
-                result += w;
-                join(s1, s2);
-            } else if (s1 == 0 && s2 != 0) {
-                result += w;
-                cnt++;
-                set[u] = s2;
-            } else if (s2 == 0 && s1 != 0) {
-                result += w;
-                cnt++;
-                set[v] = s1;
-            } else if (s1 == 0) {
-                s_cnt++;
-                result += w;
-                cnt++;
-                set[u] = u;
-                cnt++;
-                set[v] = u;
-            }
-        }
-        return result;
-    }
-
-    public static void main(String[] args) {
-        long start = System.currentTimeMillis();
-        n = in.nextInt();
-        int s, e, w, maxEndTime = 0;
-        paths = new PriorityQueue<>();
-        for (int i = 0; i < n; i++) {
-            s = in.nextInt();
-            e = in.nextInt();
-            w = in.nextInt();
-            paths.add(new path(s, e + 1, w));
-            maxEndTime = Math.max(e + 1, maxEndTime);
-        }
-        path[] p = new path[n];
-        paths.toArray(p);
-        int[] time = new int[maxEndTime];
+    static long getPay() {
+        time = new int[maxEndTime];
+        pay = new int[maxEndTime];
         long result = 0;
         int flag;
-        for (int i = 0; i < p.length; i++) {
-            path a = p[i];
+        /*
+        i is current task
+        j is the time of current task
+        k is the time of the task to move
+        */
+        for (int i = 0; i < paths.length; i++) {
+            path a = paths[i];
             for (int j = a.index1; j < a.index2; j++) {
                 if (time[j] == 0) {
                     result += a.w;
+                    pay[j] = a.w;
                     time[j] = i + 1;
                     a.index1 = j;
                     break;
                 } else if (time[j] > 0) {
-                    if (a.index2 < p[time[j] - 1].index2) {
-                        path b = p[time[j] - 1];
+                    if (a.index2 < paths[time[j] - 1].index2) {
+                        path b = paths[time[j] - 1];
                         flag = 0;
                         for (int k = b.index1 + 1; k < b.index2; k++) {
                             if (time[k] == 0) {
                                 result += a.w;
+                                pay[k] = pay[j];
+                                pay[j] = a.w;
                                 b.index1 = k;
                                 a.index1 = j;
                                 time[k] = time[j];
@@ -131,10 +74,30 @@ public class TheMaximumIncome_ST {
                 }
             }
         }
+        return result;
+    }
+
+    static void swap(path a, path b) {
+
+    }
+
+    public static void main(String[] args) {
+        long start = System.currentTimeMillis();
+        n = in.nextInt();
+        int s, e, w;
+        paths = new path[n];
+        for (int i = 0; i < n; i++) {
+            s = in.nextInt();
+            e = in.nextInt();
+            w = in.nextInt();
+            paths[i] = (new path(s - 1, e, w));
+            maxEndTime = Math.max(e + 1, maxEndTime);
+        }
+
 //        set = new int[maxEndTime + 1];
-//        Arrays.sort(paths);
+        Arrays.sort(paths);
 //        out.println(addToSet());
-        out.println(result);
+        out.println(getPay());
         long end = System.currentTimeMillis();
         out.println(end - start);
         out.close();
