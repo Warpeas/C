@@ -80,12 +80,6 @@ public class TheMaximumIncome_ST {
                 time[k] = rsv;
                 flag = 1;
                 break;
-            } else if (time[k] != 0 && b.index2 < paths[time[k] - 1].index2) {
-                path c = paths[time[k] - 1];
-                flag = swap(b, c, rsv, k);
-                if (flag == 1) {
-                    break;
-                }
             }
         }
         if (flag == 0) {
