@@ -12,7 +12,7 @@ public class TheMaximumIncome {
 
     static class task implements Comparable<task> {
         int start, end;
-        int pay;
+        int pay, active;
 
         task(int s, int e, int p) {
             start = s;
@@ -22,7 +22,10 @@ public class TheMaximumIncome {
 
         @Override
         public int compareTo(task task) {
-            return end - task.end;
+//            if (end != task.end)
+//                return end - task.end;
+//            else return start - task.start;
+            return pay - task.pay;
         }
     }
 
@@ -34,16 +37,16 @@ public class TheMaximumIncome {
             s = take.start;
             e = take.end;
             p = take.pay;
-            mp = 0;
+            mp = -1;
             mpv = Integer.MAX_VALUE;
             for (int i = s; i < e; i++) {
-                mp = mpv < time[i] ? mp : i;
+                mp = mpv <= time[i] ? mp : i;
                 mpv = Math.min(mpv, time[i]);
                 if (time[i] == 0) {
                     time[i] = p;
                     result += p;
                     break;
-                } else if (i + 1 == e && time[mp] < p) {
+                } else if (i + 1 == e && mp >= 0 && time[mp] < p) {
                     result += p - time[mp];
                     time[mp] = p;
                 }
@@ -68,6 +71,22 @@ public class TheMaximumIncome {
             }
         }
         time = new int[maxEndTime];
+        PriorityQueue<task> t = new PriorityQueue<>(tasks);
+        for (int i = 0; i < n; i++) {
+            task a = t.poll();
+            for (int j = 0; j < 1000000000; j++) {
+                j = Math.max(j, a.start);
+                if (j > time.length - 1) {
+                    break;
+                } else if (time[j] == 0) {
+                    tasks.remove(a);
+                    a.active = j;
+                    tasks.add(a);
+                    time[j] = -1;
+                    break;
+                }
+            }
+        }
         out.println(getPayment());
         long end = System.currentTimeMillis();
         out.println(end - start);
