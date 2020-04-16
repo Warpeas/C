@@ -12,6 +12,7 @@ public class TheMaximumIncome_ST {
     static int maxEndTime;
     static int[] pay;
     static int[] time;
+    static long result;
 
     static class path implements Comparable<path> {
         int index1, index2;
@@ -34,7 +35,7 @@ public class TheMaximumIncome_ST {
     static long getPay() {
         time = new int[maxEndTime];
         pay = new int[maxEndTime];
-        long result = 0;
+        result = 0;
         int flag;
         /*
         i is current task
@@ -53,21 +54,9 @@ public class TheMaximumIncome_ST {
                 } else if (time[j] > 0) {
                     if (a.index2 < paths[time[j] - 1].index2) {
                         path b = paths[time[j] - 1];
-                        flag = 0;
-                        for (int k = b.index1 + 1; k < b.index2; k++) {
-                            if (time[k] == 0) {
-                                result += a.w;
-                                pay[k] = pay[j];
-                                pay[j] = a.w;
-                                b.index1 = k;
-                                a.index1 = j;
-                                time[k] = time[j];
-                                time[j] = i + 1;
-                                flag = 1;
-                                break;
-                            }
-                        }
+                        flag = swap(a, b, i, j);
                         if (flag == 1) {
+                            result += a.w;
                             break;
                         }
                     }
@@ -77,8 +66,33 @@ public class TheMaximumIncome_ST {
         return result;
     }
 
-    static void swap(path a, path b) {
-
+    static int swap(path a, path b, int i, int j) {
+        int flag = 0;
+        int rsv = time[j];
+        int rsvp = pay[j];
+        time[j] = i + 1;
+        pay[j] = a.w;
+        a.index1 = j;
+        for (int k = b.index1 + 1; k < b.index2; k++) {
+            if (time[k] == 0) {
+                pay[k] = rsvp;
+                b.index1 = k;
+                time[k] = rsv;
+                flag = 1;
+                break;
+            } else if (time[k] != 0 && b.index2 < paths[time[k] - 1].index2) {
+                path c = paths[time[k] - 1];
+                flag = swap(b, c, rsv, k);
+                if (flag == 1) {
+                    break;
+                }
+            }
+        }
+        if (flag == 0) {
+            time[j] = rsv;
+            pay[j] = rsvp;
+        }
+        return flag;
     }
 
     public static void main(String[] args) {
