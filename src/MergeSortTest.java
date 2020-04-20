@@ -1,13 +1,13 @@
 import java.util.Random;
 
 public class MergeSortTest {
-    public static void Merge(long arr[], int l, int m, int r) {
+    public static void Merge(long[] arr, int l, int m, int r) {
         // Find sizes of two subarrays to be merged
         int n1 = m - l + 1;
         int n2 = r - m;
         /* Create temp arrays */
-        long L[] = new long[n1];
-        long R[] = new long[n2];
+        long[] L = new long[n1];
+        long[] R = new long[n2];
         /*Copy data to temp arrays*/
         for (int i = 0; i < n1; ++i)
             L[i] = arr[l + i];
@@ -46,7 +46,7 @@ public class MergeSortTest {
     
     // Main function that sorts arr[l..r] using
     // merge()
-    public static void MergeSort(long arr[], int l, int r) {
+    public static void MergeSort(long[] arr, int l, int r) {
         if (l < r) {
             // Find the middle point
             int m = (l + r) / 2;
