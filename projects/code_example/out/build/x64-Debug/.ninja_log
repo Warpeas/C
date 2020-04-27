@@ -1,0 +1,5 @@
+# ninja log v5
+0	1178	609179689	CMakeFiles/main1.dir/code1/Circle.cpp.obj	95a57424a0fc3470
+10	1195	609179689	CMakeFiles/main1.dir/code1/Rectangle.cpp.obj	679136476aa8af32
+6	1197	609179689	CMakeFiles/main1.dir/code1/main1.cpp.obj	656226604f5e01d6
+1198	2162	609179690	main1.exe	3b27abba02de4d7d

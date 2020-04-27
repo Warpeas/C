@@ -84,10 +84,17 @@
             "port": 5432,
             "server": "localhost",
             "username": "postgres"
+        },
+        {
+            "database": "C:\\Users\\Hunter\\Desktop\\filmdb(1).sqlite",
+            "dialect": "SQLite",
+            "name": "filmdb",
+            "socketPath": "C:\\Users\\Hunter\\Desktop\\filmdb.sql",
+            "username": "q"
         }
     ],
     "sqltools.useNodeRuntime": true, // 同上
-
+    "sqltools.useNodeRuntime": true
     // "files.exclude": {
     //     "**/.classpath": true,
     //     "**/.project": true,
