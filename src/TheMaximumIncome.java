@@ -4,8 +4,10 @@ import java.util.StringTokenizer;
 
 public class TheMaximumIncome {
     static InputStream inputStream = System.in;
+    static FileInputStream fin;
     static OutputStream outputStream = System.out;
-    static InputReader in = new InputReader(inputStream);
+    //    static InputReader in = new InputReader(inputStream);
+    static InputReader in;
     static PrintWriter out = new PrintWriter(outputStream);
     static int[] time;
     static PriorityQueue<task> tasks;
@@ -49,10 +51,17 @@ public class TheMaximumIncome {
                 }
             }
         }
+        generator.result1 = result;
         return result;
     }
 
     public static void main(String[] args) {
+        try {
+            fin = new FileInputStream("/home/hunter/Documents/C/ADAA/input.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        in = new InputReader(fin);
         long start = System.currentTimeMillis();
         int maxEndTime = 0;
         int n = in.nextInt();
@@ -69,8 +78,9 @@ public class TheMaximumIncome {
         }
         time = new int[maxEndTime];
         out.println(getPayment());
+//        getPayment();
         long end = System.currentTimeMillis();
-        out.println(end - start);
+//        out.println(end - start);
         out.close();
     }
 

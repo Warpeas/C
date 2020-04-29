@@ -4,8 +4,10 @@ import java.util.*;
 
 public class TheMaximumIncome_ST {
     static InputStream inputStream = System.in;
+    static FileInputStream fin;
     static OutputStream outputStream = System.out;
-    static InputReader in = new InputReader(inputStream);
+    //    static InputReader in = new InputReader(inputStream);
+    static InputReader in;
     static PrintWriter out = new PrintWriter(outputStream);
     static int n;
     static int[] set;
@@ -26,15 +28,16 @@ public class TheMaximumIncome_ST {
 
         @Override
         public int compareTo(path o) {
-            return o.w - this.w;
+            if (this.w != o.w)
+                return o.w - this.w;
+            else
+                return this.index1 - o.index1;
         }
     }
 
     static path[] paths;
 
     static long getPay() {
-        time = new int[maxEndTime];
-        pay = new int[maxEndTime];
         result = 0;
         int flag;
         /*
@@ -63,6 +66,7 @@ public class TheMaximumIncome_ST {
                 }
             }
         }
+        generator.result2 = result;
         return result;
     }
 
@@ -80,6 +84,12 @@ public class TheMaximumIncome_ST {
                 time[k] = rsv;
                 flag = 1;
                 break;
+            } else if (time[k] != 0 && b.index2 < paths[time[k] - 1].index2) {
+                path c = paths[time[k] - 1];
+                flag = swap(b, c, rsv - 1, k);
+                if (flag == 1) {
+                    break;
+                }
             }
         }
         if (flag == 0) {
@@ -90,6 +100,12 @@ public class TheMaximumIncome_ST {
     }
 
     public static void main(String[] args) {
+        try {
+            fin = new FileInputStream("/home/hunter/Documents/C/ADAA/input.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        in = new InputReader(fin);
         long start = System.currentTimeMillis();
         n = in.nextInt();
         int s, e, w;
@@ -101,13 +117,15 @@ public class TheMaximumIncome_ST {
             paths[i] = (new path(s - 1, e, w));
             maxEndTime = Math.max(e + 1, maxEndTime);
         }
-
+        time = new int[maxEndTime];
+        pay = new int[maxEndTime];
 //        set = new int[maxEndTime + 1];
         Arrays.sort(paths);
 //        out.println(addToSet());
         out.println(getPay());
+//        getPay();
         long end = System.currentTimeMillis();
-        out.println(end - start);
+//        out.println(end - start);
         out.close();
     }
 
