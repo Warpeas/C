@@ -14,3 +14,7 @@ pacifier_motion_analysis.csv
 backup/hair_dryer.tsv
 >>>>>>> bd045a063c82933e5ce83c2fbbfed276184424e0
 H-image.py
+.vscode/c_cpp_properties.json
+.vscode/launch.json
+.vscode/settings.json
+*.exe

@@ -1,44 +1,46 @@
 // A divide and conquer program in C++ to find the smallest distance from a
 // given set of points.
-
 #include <algorithm>
-#include <float.h>
 #include <iostream>
-#include <math.h>
-#include <stdlib.h>
 using namespace std;
 
 struct point_1 {
-  double x;
+  long long x;
 };
 
 struct point_2 {
-  double x, y;
+  long long x, y;
 };
 
 struct point_3 {
-  double x, y, z;
+  long long x, y, z;
 };
 
+template <class T> T closest_pair[2];
 
 // Needed to sort array of points according to X coordinate
-template <class T> bool compareX(const T &a, T &b) { return (a.x - b.x); }
+template <class T> bool compareX(const T &a, T &b) { return a.x < b.x; }
 // Needed to sort array of points according to Y coordinate
-template <class T> bool compareY(const T &a, const T &b) { return (a.y - b.y); }
+template <class T> bool compareY(const T &a, const T &b) { return a.y < b.y; }
 // Needed to sort array of points according to Z coordinate
-template <class T> bool compareZ(const T &a, const T &b) { return (a.z - b.z); }
+template <class T> bool compareZ(const T &a, const T &b) { return a.z < b.z; }
 
 // A utility function to find the distance between two points
-double dist(point_1 p1, point_1 p2) { return (p1.x - p2.x); }
+long long dist(point_1 p1, point_1 p2) { return (p2.x - p1.x); }
 
-double dist(point_2 p1, point_2 p2) {
-  return sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+long long dist(point_2 p1, point_2 p2) {
+  return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
+}
+
+long long dist(point_3 p1, point_3 p2) {
+  return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y) +
+         (p1.z - p2.z) * (p1.z - p2.z);
 }
 
 // A Brute Force method to return the smallest distance between two points
 // in P[] of size n
-double bruteForce(point_1 P[], int n) {
-  double min = DBL_MAX;
+template <class T> long long bruteForce(T P[], int n) {
+  long long min = LONG_LONG_MAX;
   for (int i = 0; i < n; ++i)
     for (int j = i + 1; j < n; ++j)
       if (dist(P[i], P[j]) < min)
@@ -46,25 +48,29 @@ double bruteForce(point_1 P[], int n) {
   return min;
 }
 
-double bruteForce(point_2 P[], int n) {
-  double min = DBL_MAX;
-  for (int i = 0; i < n; ++i)
-    for (int j = i + 1; j < n; ++j)
-      if (dist(P[i], P[j]) < min)
-        min = dist(P[i], P[j]);
+long long minDist(point_1 P[], int n) {
+  long long min = LONG_LONG_MAX;
+  for (int i = 0; i < n - 1; i++) {
+    long long distance = dist(P[i], P[i + 1]);
+    if (distance < min) {
+      min = distance;
+      closest_pair<point_1>[0] = P[i];
+      closest_pair<point_1>[1] = P[i + 1];
+    }
+  }
   return min;
 }
 
-// A utility function to find a minimum of two double values
-double min(double x, double y) { return (x < y) ? x : y; }
+// A utility function to find a minimum of two long long values
+// long long min(long long x, long long y) { return (x < y) ? x : y; }
 
 // A utility function to find the distance between the closest points of
 // strip of a given size. All points in strip[] are sorted according to
 // y coordinate. They all have an upper bound on minimum distance as d.
 // Note that this method seems to be a O(n^2) method, but it's a O(n)
 // method as the inner loop runs at most 6 times
-double stripClosest(point_2 strip[], int size, double d) {
-  double min = d; // Initialize the minimum distance as d
+long long stripClosest(point_2 strip[], int size, long long d) {
+  long long min = d; // Initialize the minimum distance as d
 
   // Pick all points one by one and try the next points till the difference
   // between y coordinates is smaller than d.
@@ -80,7 +86,7 @@ double stripClosest(point_2 strip[], int size, double d) {
 // A recursive function to find the smallest distance. The array Px contains
 // all points sorted according to x coordinates and Py contains all points
 // sorted according to y coordinates
-double closestUtil(point_2 Px[], point_2 Py[], int n) {
+long long closestUtil(point_2 Px[], point_2 Py[], int n) {
   // If there are 2 or 3 points, then use brute force
   if (n <= 3)
     return bruteForce(Px, n);
@@ -104,11 +110,11 @@ double closestUtil(point_2 Px[], point_2 Py[], int n) {
   // Consider the vertical line passing through the middle point
   // calculate the smallest distance dl on left of middle point and
   // dr on right side
-  double dl = closestUtil(Px, Pyl, mid);
-  double dr = closestUtil(Px + mid, Pyr, n - mid);
+  long long dl = closestUtil(Px, Pyl, mid);
+  long long dr = closestUtil(Px + mid, Pyr, n - mid);
 
   // Find the smaller of two distances
-  double d = min(dl, dr);
+  long long d = min(dl, dr);
 
   // Build an array strip[] that contains points close (closer than d)
   // to the line passing through the middle point
@@ -125,18 +131,12 @@ double closestUtil(point_2 Px[], point_2 Py[], int n) {
 
 // The main function that finds the smallest distance
 // This method mainly uses closestUtil()
-// double closest(point_1 P[], int n) {
-//   point_1 Px[n];
-//   for (int i = 0; i < n; i++) {
-//     Px[i] = P[i];
-//   }
+long long closest(point_1 P[], int n) {
+  sort(P, P + n, compareX<point_1>);
+  return minDist(P, n);
+}
 
-//   sort(Px, Px + n, compareX);
-
-//   // Use recursive function closestUtil() to find the smallest distance
-//   return closestUtil(Px, n);
-// }
-double closest(point_2 P[], int n) {
+long long closest(point_2 P[], int n) {
   point_2 Px[n];
   point_2 Py[n];
   for (int i = 0; i < n; i++) {
@@ -150,7 +150,7 @@ double closest(point_2 P[], int n) {
   // Use recursive function closestUtil() to find the smallest distance
   return closestUtil(Px, Py, n);
 }
-// double closest(point_3 P[], int n) {
+// long long closest(point_3 P[], int n) {
 //   point_3 Px[n];
 //   point_3 Py[n];
 //   point_3 Pz[n];
@@ -172,15 +172,18 @@ double closest(point_2 P[], int n) {
 int main() {
   int n, d;
   cin >> n >> d;
-  double x, y, z;
+  long long x, y, z;
   if (d == 1) {
     point_1 P[n];
     for (int i = 0; i < n; i++) {
       cin >> x;
       P[i] = point_1{x};
     }
-    // closest(P, n);
-
+    closest(P, n);
+    // cout << closest(P, n) << endl;
+    for (int i = 0; i < 2; i++) {
+      cout << closest_pair<point_1>[i].x << endl;
+    }
   } else if (d == 2) {
     point_2 P[n];
     for (int i = 0; i < n; i++) {
@@ -196,5 +199,6 @@ int main() {
     }
     // closest(P, n);
   }
+
   return 0;
 }
