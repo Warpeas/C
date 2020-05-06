@@ -21,7 +21,7 @@ def motion(data):
     for string in strings:
         if (isinstance(string, str)):
             blob = TextBlob(string)
-            # blob.correct()#Grammar correction
+            #blob.correct()#Grammar correction
             bloblist.append(
                 (string, blob.sentiment.polarity, blob.sentiment.subjectivity))
     df = pd.DataFrame(bloblist, columns=[
@@ -49,8 +49,11 @@ def tf_idf(corpus):
     ranking = pd.DataFrame(data, columns=['rank', 'term'])
     ranking = ranking[ranking['rank'] >= 0]
     ranking['rank'] = ranking['rank'].astype(int)
+<<<<<<< HEAD
     # ranking.plot()
     # plt.show()
+=======
+>>>>>>> bd045a063c82933e5ce83c2fbbfed276184424e0
     ranking.to_csv('hair_dryer_tf-idf_analysis.csv')
 
 
@@ -62,7 +65,10 @@ def search_product_id(id, data):
             cnt += 1
     print(cnt)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> bd045a063c82933e5ce83c2fbbfed276184424e0
 def search_product_id_mul(id, data):
     cnt = 0
     for i, row in data.iterrows():
@@ -111,6 +117,7 @@ def returned(data):
             cnt += 1
     print(cnt)
 
+<<<<<<< HEAD
 
 def enlarge_data(data):
     for i in range(2):
@@ -138,22 +145,38 @@ def loadData():
         #           (train.shape[0], 1000 * Time))
     except Exception as e:
         print("error ", e)
+=======
+def loadData():
+    # Open the tsv
+    startTime = time.time()
+    train = pd.read_csv('hair_dryer.tsv', sep='\t', header=0, encoding='utf8')
+>>>>>>> bd045a063c82933e5ce83c2fbbfed276184424e0
     # product = pd.read_csv('hair_dryer.tsv', sep='\t', header=0, encoding='utf8', usecols=['product_id', 'product_parent', 'product_title', 'product_category'])
     # product = product.drop_duplicates(['product_id'])
     # review = pd.read_csv('hair_dryer.tsv', sep='\t', header=0, encoding='utf8', usecols=['marketplace', 'customer_id', 'review_id', 'star_rating', 'helpful_votes', 'total_votes', 'vine', 'verified_purchase', 'review_headline', 'review_body', 'review_date'])
     # mul = review = pd.read_csv('hair_dryer.tsv', sep='\t', header=0, encoding='utf8', usecols=['product_id', 'review_id'])
+<<<<<<< HEAD
     # data = train[(train["verified_purchase"].isin(["Y", "y"]) & train["vine"].isin(["Y", "y"])) | (train["verified_purchase"].isin(
     #     ["Y", "y"]) & train["vine"].isin(["N", "n"])) | (train["verified_purchase"].isin(["N", "n"]) & train["vine"].isin(["Y", "y"]))]
     # data = data.dropna(axis=0, how='any')
+=======
+    data = train[(train["verified_purchase"].isin(["Y", "y"]) & train["vine"].isin(["Y", "y"])) | (train["verified_purchase"].isin(
+        ["Y", "y"]) & train["vine"].isin(["N", "n"])) | (train["verified_purchase"].isin(["N", "n"]) & train["vine"].isin(["Y", "y"]))]
+    data = data.dropna(axis=0, how='any')
+>>>>>>> bd045a063c82933e5ce83c2fbbfed276184424e0
     endTime = time.time()
     Time = endTime - startTime
     # print(product)
     # print("import and format success: %d rows in %.8s ms" % (product.shape[0], 1000*Time))
+<<<<<<< HEAD
     print(train.info(memory_usage='deep'))
     print("import success: %d rows in %.2f ms" % (train.shape[0], 1000 * Time))
     # print("import success in %.2f ms" % (1000 * Time))
 
     # enlarge_data(train)
+=======
+    print("import success: %d rows in %.8s ms" % (train.shape[0], 1000*Time))
+>>>>>>> bd045a063c82933e5ce83c2fbbfed276184424e0
 
     # startTime = time.time()
     # search_product_id("B000FS1W4U", train)
@@ -202,12 +225,17 @@ def loadData():
     # endTime = time.time()
     # Time = endTime - startTime
     # print("motion analysis finish in %.8s ms" % (1000*Time))
+<<<<<<< HEAD
 
     # startTime = time.time()
     # tf_idf(data)
     # endTime = time.time()
     # Time = endTime - startTime
     # print("tf-idf analysis finish in %.8s ms" % (1000*Time))
+=======
+    
+    # tf_idf(data)
+>>>>>>> bd045a063c82933e5ce83c2fbbfed276184424e0
 
 
 if __name__ == "__main__":

@@ -6,9 +6,12 @@ from textblob import TextBlob
 import numpy as np
 import gevent
 import gevent.pool
+<<<<<<< HEAD
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
 import stopwords
+=======
+>>>>>>> bd045a063c82933e5ce83c2fbbfed276184424e0
 
 # motion analysis
 
@@ -33,6 +36,7 @@ def motion(data):
     #               right_index=False, sort=True, copy=True, indicator=False)
     df.to_csv('hair_dryer_motion_analysis.csv')
 
+<<<<<<< HEAD
 # tf-idf calculation
 
 
@@ -53,6 +57,8 @@ def tf_idf(corpus):
     plt.show()
     ranking.to_csv('hair_dryer_tf-idf_analysis.csv')
 
+=======
+>>>>>>> bd045a063c82933e5ce83c2fbbfed276184424e0
 
 def percentage_count(data):
     rows = data['product_id'].value_counts()
@@ -123,7 +129,11 @@ def loadData():
 
     cur = conn.cursor()
     cur.execute("SELECT * from hair_dryer")
+<<<<<<< HEAD
     # rows = cur.fetchall()
+=======
+    rows = cur.fetchall()
+>>>>>>> bd045a063c82933e5ce83c2fbbfed276184424e0
     # sql_command = "select * from hair_dryer"
     # try:
     #     data = pd.read_sql(sql_command, conn)
@@ -166,6 +176,7 @@ def call_gevent(count, cur):
 if __name__ == "__main__":
     cur, conn = loadData()
     # cur = loadDataFromFile()
+<<<<<<< HEAD
     # test_count = 10
     # call_gevent(test_count, cur)
 
@@ -176,4 +187,8 @@ if __name__ == "__main__":
     Time = endTime - startTime
     print("tf-idf analysis finish in %.8s ms" % (1000*Time))
 
+=======
+    test_count = 10
+    call_gevent(test_count, cur)
+>>>>>>> bd045a063c82933e5ce83c2fbbfed276184424e0
     conn.close()
