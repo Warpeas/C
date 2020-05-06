@@ -1,8 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\ADAA"
+    "\\ADAA",
+    "\\projects",
+    "\\projects\\code_example"
   ],
-  "SelectedNode": "\\ADAA\\MinimumVolatility.cpp",
+  "SelectedNode": "\\projects\\code_example\\CMakeLists.txt",
   "PreviewInSolutionExplorer": false
 }

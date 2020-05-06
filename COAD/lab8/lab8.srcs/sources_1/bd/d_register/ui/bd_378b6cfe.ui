@@ -1,0 +1,26 @@
+{
+   "ActiveEmotionalView":"Default View",
+   "Default View_ScaleFactor":"0.44661",
+   "Default View_TopLeft":"-708,-770",
+   "ExpandedHierarchyInLayout":"",
+   "guistr":"# # String gsaved with Nlview 7.0.21  2019-05-29 bk=1.5064 VDI=41 GEI=36 GUI=JA:9.0 TLS
+#  -string -flagsOSRD
+preplace port Write -pg 1 -lvl 0 -x -220 -y -460 -defaultsOSRD
+preplace inst util_vector_logic_0 -pg 1 -lvl 4 -x 1400 -y -140 -defaultsOSRD
+preplace inst util_vector_logic_1 -pg 1 -lvl 1 -x -50 -y -260 -defaultsOSRD
+preplace inst util_vector_logic_2 -pg 1 -lvl 2 -x 270 -y -260 -defaultsOSRD
+preplace inst util_vector_logic_3 -pg 1 -lvl 3 -x 590 -y -500 -defaultsOSRD
+preplace inst util_vector_logic_4 -pg 1 -lvl 2 -x 270 -y -490 -defaultsOSRD
+preplace inst util_vector_logic_5 -pg 1 -lvl 3 -x 590 -y 340 -defaultsOSRD
+preplace inst util_vector_logic_6 -pg 1 -lvl 3 -x 590 -y 220 -defaultsOSRD
+preplace inst util_vector_logic_7 -pg 1 -lvl 3 -x 590 -y 100 -defaultsOSRD
+preplace inst util_vector_logic_8 -pg 1 -lvl 3 -x 590 -y -380 -defaultsOSRD
+preplace inst util_vector_logic_9 -pg 1 -lvl 3 -x 590 -y -20 -defaultsOSRD
+preplace inst util_vector_logic_10 -pg 1 -lvl 3 -x 590 -y -140 -defaultsOSRD
+preplace inst util_vector_logic_11 -pg 1 -lvl 3 -x 590 -y -260 -defaultsOSRD
+preplace netloc Write_1 1 0 2 N -460 100J
+levelinfo -pg 1 -220 -50 270 590 1400 1560
+pagesize -pg 1 -db -bbox -sgen -310 -570 1560 410
+"
+}
+0

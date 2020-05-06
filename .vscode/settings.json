@@ -8,11 +8,12 @@
 
     "code-runner.runInTerminal": true, // 设置成false会在“输出”中输出，无法输入
     "code-runner.executorMap": {
-        "c": "cd $dir && clang '$fileName' -o '$fileNameWithoutExt.exe' -Wall -g -O2 -static-libgcc --target=x86_64-w64-mingw -std=c11 && & '$dir$fileNameWithoutExt'",
-        "cpp": "cd $dir && clang++ '$fileName' -o '$fileNameWithoutExt.exe' -Wall -g -O2 -static-libgcc --target=x86_64-w64-mingw -std=c++17 && & '$dir$fileNameWithoutExt'"
+        "c": "cd $dir && clang $fileName -o '$fileNameWithoutExt' -Wall -g -O2 -static-libgcc -std=c11 && $dir$fileNameWithoutExt",
+        "cpp": "cd $dir && clang++ $fileName -o '$fileNameWithoutExt' -Wall -g -O2 -static-libgcc -std=c++17 && $dir$fileNameWithoutExt",
+        //"cpp": "cd $dir && g++ -std=c++14 $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
         // "c": "cd $dir && clang $fileName -o $fileNameWithoutExt.exe -Wall -g -O2 -static-libgcc --target=x86_64-w64-mingw -std=c11 && $dir$fileNameWithoutExt",
         // "cpp": "cd $dir && clang++ $fileName -o $fileNameWithoutExt.exe -Wall -g -O2 -static-libgcc --target=x86_64-w64-mingw -std=c++17 && $dir$fileNameWithoutExt"
-    }, // 控制Code Runner命令；未注释的仅适用于PowerShell（Win10默认），文件名中有空格也可以编译运行；注释掉的适用于cmd（win7默认），也适用于PS，文件名中有空格时无法运行
+        }, // 控制Code Runner命令；未注释的仅适用于PowerShell（Win10默认），文件名中有空格也可以编译运行；注释掉的适用于cmd（win7默认），也适用于PS，文件名中有空格时无法运行
     "code-runner.saveFileBeforeRun": true, // run code前保存
     "code-runner.preserveFocus": true, // 若为false，run code后光标会聚焦到终端上。如果需要频繁输入数据可设为false
     "code-runner.clearPreviousOutput": false, // 每次run code前清空属于code runner的终端消息，默认false
@@ -84,10 +85,32 @@
             "port": 5432,
             "server": "localhost",
             "username": "postgres"
+        },
+        {
+<<<<<<< HEAD
+            "database": "shenzhen_metro",
+            "dialect": "PostgreSQL",
+            "name": "shenzhen_metro",
+            "password": "@0000819wd",
+            "port": 5432,
+            "server": "localhost",
+            "username": "hunter"
+        }
+    ],
+    "sqltools.useNodeRuntime": true,
+    "verilog-format.setting": "/home/hunter/Documents/C/.vscode/.verilog-format.properties", // 同上
+
+=======
+            "database": "C:\\Users\\Hunter\\Desktop\\filmdb(1).sqlite",
+            "dialect": "SQLite",
+            "name": "filmdb",
+            "socketPath": "C:\\Users\\Hunter\\Desktop\\filmdb.sql",
+            "username": "q"
         }
     ],
     "sqltools.useNodeRuntime": true, // 同上
-
+    "sqltools.useNodeRuntime": true
+>>>>>>> 55da6684a832fa8491c983cc98417938445a0b0d
     // "files.exclude": {
     //     "**/.classpath": true,
     //     "**/.project": true,

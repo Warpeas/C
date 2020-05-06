@@ -1,0 +1,123 @@
+{
+  "design": {
+    "design_info": {
+      "boundary_crc": "0x0",
+      "device": "xc7a100tfgg484-1",
+      "name": "d_register",
+      "synth_flow_mode": "Hierarchical",
+      "tool_version": "2019.2"
+    },
+    "design_tree": {
+      "util_vector_logic_0": "",
+      "util_vector_logic_1": "",
+      "util_vector_logic_2": "",
+      "util_vector_logic_3": "",
+      "util_vector_logic_4": "",
+      "util_vector_logic_5": "",
+      "util_vector_logic_6": "",
+      "util_vector_logic_7": "",
+      "util_vector_logic_8": "",
+      "util_vector_logic_9": "",
+      "util_vector_logic_10": "",
+      "util_vector_logic_11": "",
+      "dist_mem_gen_0": ""
+    },
+    "ports": {
+      "Write": {
+        "direction": "I"
+      }
+    },
+    "components": {
+      "util_vector_logic_0": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "d_register_util_vector_logic_0_0"
+      },
+      "util_vector_logic_1": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "d_register_util_vector_logic_1_0",
+        "parameters": {
+          "C_OPERATION": {
+            "value": "not"
+          },
+          "C_SIZE": {
+            "value": "1"
+          }
+        }
+      },
+      "util_vector_logic_2": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "d_register_util_vector_logic_2_0",
+        "parameters": {
+          "C_SIZE": {
+            "value": "1"
+          }
+        }
+      },
+      "util_vector_logic_3": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "d_register_util_vector_logic_3_0"
+      },
+      "util_vector_logic_4": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "d_register_util_vector_logic_4_0",
+        "parameters": {
+          "C_SIZE": {
+            "value": "32"
+          }
+        }
+      },
+      "util_vector_logic_5": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "d_register_util_vector_logic_3_1"
+      },
+      "util_vector_logic_6": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "d_register_util_vector_logic_3_2"
+      },
+      "util_vector_logic_7": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "d_register_util_vector_logic_3_3"
+      },
+      "util_vector_logic_8": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "d_register_util_vector_logic_3_4"
+      },
+      "util_vector_logic_9": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "d_register_util_vector_logic_3_5"
+      },
+      "util_vector_logic_10": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "d_register_util_vector_logic_3_6"
+      },
+      "util_vector_logic_11": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "d_register_util_vector_logic_3_7"
+      },
+      "dist_mem_gen_0": {
+        "vlnv": "xilinx.com:ip:dist_mem_gen:8.0",
+        "xci_name": "d_register_dist_mem_gen_0_0",
+        "parameters": {
+          "data_width": {
+            "value": "32"
+          },
+          "depth": {
+            "value": "32"
+          },
+          "memory_type": {
+            "value": "dual_port_ram"
+          }
+        }
+      }
+    },
+    "nets": {
+      "Write_1": {
+        "ports": [
+          "Write",
+          "util_vector_logic_4/Op2",
+          "util_vector_logic_2/Op1"
+        ]
+      }
+    }
+  }
+}
