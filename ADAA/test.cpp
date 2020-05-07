@@ -1,12 +1,19 @@
-#include <hash_map>
-#include <string>
-using namespace std;
-int main(){
-        __gnu_cxx::hash_map<int, string> mymap;
-        mymap[9527]="唐伯虎点秋香";
-        mymap[1000000]="百万富翁的生活";
-        mymap[10000]="白领的工资底线";
-        if(mymap.find(10000) != mymap.end()){
+#include <iostream>
+#include <fstream>
 
-        }
+using namespace std;
+int main() {
+  long long v = 1, c = 0, n = 0, lv, lc, ln;
+    ofstream fo;
+  fo.open("output.txt");
+  cout.rdbuf(fo.rdbuf());
+  for (int i = 0; i < 60; i++) {
+    lv = v;
+    lc = c;
+    ln = n;
+    cout << "{" << v << ", " << c << ", " << n << "}, ";
+    v = lv + ln;
+    c = lc + lv;
+    n = ln + lc;
+  }
 }
