@@ -1,11 +1,9 @@
 #include <algorithm>
 #include <cmath>
-#include <complex>
 #include <iostream>
 
-#define cp complex<double>
 #define PI acos((long double)-1.0)
-#define pi PI
+#define Pi PI
 
 using namespace std;
 int zys[50];
@@ -14,6 +12,19 @@ int n;
 struct polynumber {
   long long num, exp;
   polynumber *next;
+};
+
+struct complex {
+  double x, y;
+  inline complex operator+(const complex b) const {
+    return (complex){x + b.x, y + b.y};
+  }
+  inline complex operator*(const complex b) const {
+    return (complex){x * b.x - y * b.y, x * b.y + y * b.x};
+  }
+  inline complex operator-(const complex b) const {
+    return (complex){x - b.x, y - b.y};
+  }
 };
 
 unsigned long next_power_of_two(unsigned long v) {
@@ -26,32 +37,25 @@ unsigned long next_power_of_two(unsigned long v) {
   v++;
   return v;
 }
-void fft(cp *a, int n, int inv) {
-  int bit = 0;
-  int rev[n];
-  while ((1 << bit) < n)
-    bit++;
-  for (int i = 0; i < n; i++) {
-    rev[i] = (rev[i >> 1] >> 1) | ((i & 1) << (bit - 1));
-    if (i < rev[i])
-      swap(a[i], a[rev[i]]); //不加这条if会交换两次（就是没交换）
-  }
-  for (int mid = 1; mid < n; mid *= 2) // mid是准备合并序列的长度的二分之一
-  {
-    cp temp(cos(pi / mid), inv * sin(pi / mid)); //单位根，pi的系数2已经约掉了
-    for (int i = 0; i < n;
-         i += mid * 2) // mid*2是准备合并序列的长度，i是合并到了哪一位
-    {
-      cp omega(1, 0);
-      for (int j = 0; j < mid;
-           j++, omega *= temp) //只扫左半部分，得到右半部分的答案
-      {
-        cp x = a[i + j], y = omega * a[i + j + mid];
-        a[i + j] = x + y, a[i + j + mid] = x - y; //这个就是蝴蝶变换什么的
-      }
-    }
+
+void FFT(int length, complex *A, const int fla) {
+  if (length == 1)
+    return;
+  complex A1[length >> 1], A2[length >> 1];
+  for (int i = 0; i < length; i += 2)
+    A1[i >> 1] = A[i], A2[i >> 1] = A[i + 1];
+  FFT(length >> 1, A1, fla), FFT(length >> 1, A2, fla);
+  const complex w =
+      (complex){static_cast<double>(cos(Pi * 2.0 / length)),
+                static_cast<double>(sin(Pi * 2.0 / length) * fla)};
+  complex k = (complex){1, 0};
+  length >>= 1;
+  for (int i = 0; i < length; i++, k = k * w) {
+    A[i] = A1[i] + k * A2[i];
+    A[i + length] = A1[i] - k * A2[i];
   }
 }
+
 double *FFT(int n, double a[], double inv) {
   if (n == 1)
     return a;
@@ -142,76 +146,75 @@ int main() {
   for (int i = 0; i < p; i++) {
     rtn[i] = 0;
   }
+  int len = next_power_of_two(p) + 1;
 
   long long Ai;
-
+  // long long *b = new long long[len]();
+  // double *b = new double[len]();
+  complex *b = new complex[len]();
+  for (int i = 0; i < len; i++) {
+    b[i].x = 0;
+    b[i].y = 0;
+  }
   for (int i = 0; i < n; i++) {
     cin >> Ai;
     e[i] = rtx[Ai % p];
-    // b[e[i]]+=1;
+    b[e[i]].x += 1;
   }
 
   //  FFT
-  // int len = next_power_of_two(p) + 1;
-  // long long *b = new long long[len]();
-  // double *b = new double[len]();
-  // cp *b = new cp[len]();
-  // for (int i = 0; i < len; i++) {
-  //   b[i] = 0;
-  // }
+
   // double *c = new double[len]();
-  // b++;
+  complex *c = new complex[len]();
+  b++;
   // b = FFT(len - 1, b, -1);
-  // // fft(b, len - 1, -1);
-  // for (int i = 0; i < len - 1; i++) {
-  //   b[i] = b[i] * b[i];
-  // }
-  // c++;
+  FFT(len - 1, b, -1);
+  for (int i = 0; i < len - 1; i++) {
+    b[i] = b[i] * b[i];
+  }
+  c++;
   // c = FFT(len - 1, b, 1);
-  // // fft(b, len - 1, 1);
-  // c--;
-  // for (int i = 0; i < len; i++) {
-  //   cout << c[i] << " ";
-  // }
-  // cout << endl;
-  // long long exp, r;
-  // for (int i = 1; i < p; i++) {
-  //   exp = 2 * i;
-  //   r = xtr[exp % (p - 1)];
-  //   rtn[r] = rtn[r] + c[i];
-  // }
-  // b--;
-  // for (int i = 0; i < p; i++) {
-  //   rtn[0] += b[0] * b[i];
-  // }
-
-  sort(e, e + n);
-
-  //  n^2 poly multiply
-  polynumber *pn = new polynumber{1, e[0]};
-  polynumber *head = pn;
-  for (int i = 1; i < n; i++) {
-    if (e[i] == pn->exp) {
-      pn->num++;
-    } else {
-      pn->next = new polynumber{1, e[i]};
-      pn = pn->next;
-    }
+  FFT(len - 1, b, 1);
+  c--;
+  c = b;
+  long long exp, r;
+  for (int i = 1; i < p; i++) {
+    exp = 2 * i;
+    r = xtr[exp % (p - 1)];
+    rtn[r] = rtn[r] + c[i].x;
+  }
+  b--;
+  for (int i = 0; i < p; i++) {
+    rtn[0] += b[0].x * b[i].x;
   }
 
-  long exp;
-  polynumber *p1 = head, *p2 = head;
-  while (p1 != nullptr) {
-    while (p2 != nullptr) {
-      exp = (p1->exp + p2->exp) % (p - 1);
-      exp = exp == 0 ? (p - 1) : exp;
-      rtn[xtr[exp]] += p1->num * p2->num;
-      // cout << xtr[exp] << " " << rtn[xtr[exp]] << endl;
-      p2 = p2->next;
-    }
-    p2 = head;
-    p1 = p1->next;
-  }
+  // sort(e, e + n);
+
+  // //  n^2 poly multiply
+  // polynumber *pn = new polynumber{1, e[0]};
+  // polynumber *head = pn;
+  // for (int i = 1; i < n; i++) {
+  //   if (e[i] == pn->exp) {
+  //     pn->num++;
+  //   } else {
+  //     pn->next = new polynumber{1, e[i]};
+  //     pn = pn->next;
+  //   }
+  // }
+
+  // long exp;
+  // polynumber *p1 = head, *p2 = head;
+  // while (p1 != nullptr) {
+  //   while (p2 != nullptr) {
+  //     exp = (p1->exp + p2->exp) % (p - 1);
+  //     exp = exp == 0 ? (p - 1) : exp;
+  //     rtn[xtr[exp]] += p1->num * p2->num;
+  //     // cout << xtr[exp] << " " << rtn[xtr[exp]] << endl;
+  //     p2 = p2->next;
+  //   }
+  //   p2 = head;
+  //   p1 = p1->next;
+  // }
 
   for (int i = 0; i < p; i++) {
     cout << rtn[i] << endl;
