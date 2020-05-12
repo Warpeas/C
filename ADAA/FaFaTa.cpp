@@ -15,7 +15,7 @@ struct polynumber {
 };
 
 struct complex {
-  double x, y;
+  long double x, y;
   inline complex operator+(const complex b) const {
     return (complex){x + b.x, y + b.y};
   }
@@ -25,6 +25,7 @@ struct complex {
   inline complex operator-(const complex b) const {
     return (complex){x - b.x, y - b.y};
   }
+  inline complex operator/(const double t) { return complex{x / t, y / t}; }
 };
 
 unsigned long next_power_of_two(unsigned long v) {
@@ -38,45 +39,54 @@ unsigned long next_power_of_two(unsigned long v) {
   return v;
 }
 
-void FFT(int length, complex *A, const int fla) {
-  if (length == 1)
-    return;
-  complex A1[length >> 1], A2[length >> 1];
-  for (int i = 0; i < length; i += 2)
-    A1[i >> 1] = A[i], A2[i >> 1] = A[i + 1];
-  FFT(length >> 1, A1, fla), FFT(length >> 1, A2, fla);
-  const complex w =
-      (complex){static_cast<double>(cos(Pi * 2.0 / length)),
-                static_cast<double>(sin(Pi * 2.0 / length) * fla)};
-  complex k = (complex){1, 0};
-  length >>= 1;
-  for (int i = 0; i < length; i++, k = k * w) {
-    A[i] = A1[i] + k * A2[i];
-    A[i + length] = A1[i] - k * A2[i];
-  }
-}
+// void FFT(int length, complex *A, const int fla) {
+//   if (length == 1)
+//     return;
+//   complex A1[length >> 1], A2[length >> 1];
+//   for (int i = 0; i < length; i += 2)
+//     A1[i >> 1] = A[i], A2[i >> 1] = A[i + 1];
+//   FFT(length >> 1, A1, fla), FFT(length >> 1, A2, fla);
+//   const complex w =
+//       (complex){static_cast<double>(cos(Pi * 2.0 / length)),
+//                 static_cast<double>(sin(Pi * 2.0 / length) * fla)};
+//   complex k = (complex){1, 0};
+//   length >>= 1;
+//   for (int i = 0; i < length; i++, k = k * w) {
+//     A[i] = A1[i] + k * A2[i];
+//     A[i + length] = A1[i] - k * A2[i];
+//   }
+// }
 
-double *FFT(int n, double a[], double inv) {
+void FFT(int n, complex a[], double inv) {
   if (n == 1)
-    return a;
-  double *e = new double[n / 2]();
-  double *d = new double[n / 2]();
-  for (int k = 0; 2 * k < n / 2; k++) {
-    e[k] = a[2 * k];
-    a[2 * k] = 0;
-    d[k] = a[2 * k + 1];
-    a[2 * k + 1] = 0;
-  }
-  e = FFT(n / 2, e, inv);
-  d = FFT(n / 2, d, inv);
-  double w;
-  double t = inv == 1.0 ? n : 1;
+    return;
+  complex *e = new complex[n / 2]();
+  complex *d = new complex[n / 2]();
   for (int k = 0; k < n / 2; k++) {
-    w = cos(inv * 2 * PI * k / n) + sin(inv * 2 * PI * k / n);
+    e[k] = a[2 * k];
+    d[k] = a[2 * k + 1];
+  }
+  FFT(n / 2, e, inv);
+  FFT(n / 2, d, inv);
+  complex w;
+  double t = inv == 1.0 ? 1 : n;
+  for (int k = 0; k < n / 2; k++) {
+    w = complex{static_cast<double>(cos(-inv * 2.0 * PI * k / n)),
+                static_cast<double>(sin(-inv * 2.0 * PI * k / n))};
     a[k] = (e[k] + w * d[k]) / t;
     a[k + n / 2] = (e[k] - w * d[k]) / t;
   }
-  return a;
+  // for (int i = 1; i < n; i <<= 1) {
+  //   const complex w = (complex){cos(PI / i), -inv * sin(PI / i)};
+  //   for (int j = 0; j < n; j += (i << 1)) {
+  //     complex K = (complex){1, 0};
+  //     for (int k = 0; k < i; k++, K = K * w) {
+  //       const complex x = a[j + k], y = a[j + k + i] * K;
+  //       a[j + k] = x + y;
+  //       a[j + k + i] = x - y;
+  //     }
+  //   }
+  // }
 }
 
 //  get res
@@ -102,7 +112,7 @@ int pd(int x, int p, int o) {
 }
 
 int main() {
-  long long n, p, o = 0, pr;
+  long long n, p, o = 0, pr = 0;
   cin.sync_with_stdio(0);
   cin.tie(0);
   cout.sync_with_stdio(0);
@@ -131,10 +141,11 @@ int main() {
       break;
     }
   }
-  long long *rtx = new long long[p];
-  long long rem = 0;
+  // cout <<p<<" "<< pr << endl;
+  long long rtx[p];
+  long long rem;
   long long *xtr = new long long[p];
-  rtx[0] = 0, xtr[0] = 0;
+  rtx[0] = 0, xtr[0] = 1;
   for (int i = 1; i < p; i++) {
     rem = pow(pr, i);
     rem %= p;
@@ -146,12 +157,12 @@ int main() {
   for (int i = 0; i < p; i++) {
     rtn[i] = 0;
   }
-  int len = next_power_of_two(p) + 1;
+  int len = next_power_of_two(2 * p) + 1;
 
   long long Ai;
   // long long *b = new long long[len]();
   // double *b = new double[len]();
-  complex *b = new complex[len]();
+  complex b[len];
   for (int i = 0; i < len; i++) {
     b[i].x = 0;
     b[i].y = 0;
@@ -161,30 +172,34 @@ int main() {
     e[i] = rtx[Ai % p];
     b[e[i]].x += 1;
   }
-
+  for (int i = 0; i < len; i++) {
+    cout << b[i].x << " ";
+  }
+  cout << endl;
   //  FFT
-
-  // double *c = new double[len]();
-  complex *c = new complex[len]();
-  b++;
-  // b = FFT(len - 1, b, -1);
-  FFT(len - 1, b, -1);
-  for (int i = 0; i < len - 1; i++) {
+  FFT(len - 1, b + 1, 1.0);
+  for (int i = 0; i < len; i++) {
+    cout << b[i].x << " ";
+  }
+  cout << endl;
+  for (int i = 1; i < len; i++) {
     b[i] = b[i] * b[i];
   }
-  c++;
-  // c = FFT(len - 1, b, 1);
-  FFT(len - 1, b, 1);
-  c--;
-  c = b;
-  long long exp, r;
-  for (int i = 1; i < p; i++) {
-    exp = 2 * i;
-    r = xtr[exp % (p - 1)];
-    rtn[r] = rtn[r] + c[i].x;
+  for (int i = 0; i < len; i++) {
+    cout << b[i].x << " ";
   }
-  b--;
-  for (int i = 0; i < p; i++) {
+  cout << endl;
+  FFT(len - 1, &b[1], -1.0);
+  for (int i = 0; i < len; i++) {
+    cout << b[i].x << " ";
+  }
+  cout << endl;
+  int r;
+  for (int i = 1; i < len; i += 2) {
+    r = xtr[(i + 1) % (p - 1)];
+    rtn[r] = rtn[r] + (long long)(b[i].x + 0.5);
+  }
+  for (int i = 0; i < len; i++) {
     rtn[0] += b[0].x * b[i].x;
   }
 
