@@ -2,7 +2,8 @@ import java.io.*;
 import java.util.*;
 
 public class Graham {
-    static class node {
+    static node root;
+    static class node implements Comparable<node> {
         int x, y;
         double tan, dist;
 
@@ -33,6 +34,11 @@ public class Graham {
             double l2 = (double) y - tan * x;
             return l1 > l & l2 > l;
         }
+    
+        @Override
+        public int compareTo(node o) {
+            return (x-root.x)*(o.y-root.y)-(y-root.y)*(o.x-root.x);
+        }
     }
 
     public static void main(String[] args) {
@@ -41,63 +47,70 @@ public class Graham {
         InputReader in = new InputReader(inputStream);
         PrintWriter out = new PrintWriter(outputStream);
         int n = in.nextInt();
-//        ArrayList<node> nodes = new ArrayList<>();
-        node[] nodes = new node[n];
-        node root = null;
+        ArrayList<node> nodes = new ArrayList<>(n);
+//        node[] nodes = new node[n];
         for (int i = 0; i < n; i++) {
-            nodes[i] = (new node(in.nextInt(), in.nextInt()));
-            if (root == null || nodes[i].x < root.x && nodes[i].y < root.y) {
-                root = nodes[i];
+//            nodes[i] = (new node(in.nextInt(), in.nextInt()));
+            nodes.add(new node(in.nextInt(),in.nextInt()));
+//            if (root == null || nodes[i].x < root.x && nodes[i].y < root.y) {
+//                root = nodes[i];
+//            }
+            if (root == null || nodes.get(i).x < root.x) {
+                root = nodes.get(i);
             }
         }
+        nodes.remove(root);
         long start = System.currentTimeMillis();
-        for (int i = 0; i < n; i++) {
-            nodes[i].calculate(root);
+        for (int i = 0; i < n-1; i++) {
+//            nodes[i].calculate(root);
+            nodes.get(i).calculate(root);
         }
-//        nodes.remove(root);
-//        Map<Double, node> tan_to_node = new HashMap<>();
-//        for (int i = 0; i < nodes.size(); i++) {
-//            assert root != null;
-//            nodes.get(i).calculate(root);
-//            if (!tan_to_node.containsKey(nodes.get(i).tan)) {
-//                tan_to_node.put(nodes.get(i).tan, nodes.get(i));
-//            } else if (tan_to_node.get(nodes.get(i).tan).dist < nodes.get(i).dist) {
-//                tan_to_node.replace(nodes.get(i).tan, nodes.get(i));
-//            }
-//        }
+        nodes.remove(root);
+        Map<Double, node> tan_to_node = new HashMap<>();
+        for (int i = 0; i < nodes.size(); i++) {
+            assert root != null;
+            nodes.get(i).calculate(root);
+            if (!tan_to_node.containsKey(nodes.get(i).tan)) {
+                tan_to_node.put(nodes.get(i).tan, nodes.get(i));
+            } else if (tan_to_node.get(nodes.get(i).tan).dist < nodes.get(i).dist) {
+                tan_to_node.replace(nodes.get(i).tan, nodes.get(i));
+            }
+        }
 //        for (int i = 0; i < n; i++) {
 //            nodes[i] = new node(in.nextInt(), in.nextInt());
 //        }
-        Arrays.sort(nodes, (node, t1) -> {
-            if (node.dist > 0 && node.tan - t1.tan > 0 || (node.tan == t1.tan && node.dist > t1.dist)) {
-                return 1;
-            } else if (node.tan == t1.tan && node.dist == t1.dist) {
-                return 0;
-            }
-            return -1;
-        });
-//        root = nodes[0];
-
-        Stack<node> nodeStack = new Stack<>();
-//        Queue<node> nodeQueue = new PriorityQueue<>((node, t1) -> {
-//            if (node.tan - t1.tan > 0) {
+//        Arrays.sort(nodes, (node, t1) -> {
+//            if (node.dist > 0 && node.tan - t1.tan > 0 || (node.tan == t1.tan && node.dist > t1.dist)) {
 //                return 1;
-//            } else if (node.tan == t1.tan) {
+//            } else if (node.tan == t1.tan && node.dist == t1.dist) {
 //                return 0;
 //            }
 //            return -1;
 //        });
-//        nodeQueue.addAll(tan_to_node.values());
-//        nodeStack.push(nodeQueue.poll());
-//        nodeStack.push(nodeQueue.poll());
-        nodeStack.push(nodes[0]);
-        nodeStack.push(nodes[1]);
-        nodeStack.push(nodes[2]);
-//        while (!nodeQueue.isEmpty()) {
-        for (int i = 3; i < n; i++) {
+//        Arrays.sort(nodes);
+//        root = nodes[0];
+
+        Stack<node> nodeStack = new Stack<>();
+        Queue<node> nodeQueue = new PriorityQueue<>((node, t1) -> {
+            if (node.tan - t1.tan > 0) {
+                return 1;
+            } else if (node.tan == t1.tan) {
+                return 0;
+            }
+            return -1;
+        });
+        nodeQueue.addAll(tan_to_node.values());
+        
+        nodeStack.push(root);
+        nodeStack.push(nodeQueue.poll());
+        nodeStack.push(nodeQueue.poll());
+//        nodeStack.push(nodes.get(0));
+        while (!nodeQueue.isEmpty()) {
+//        for (int i = 3; i < n; i++) {
             node s = nodeStack.pop();
-//            node b = nodeQueue.poll();
-            node b = nodes[i];
+            node b = nodeQueue.poll();
+//            node b = nodes[i];
+//            node b = nodes.get(i);
             if (!s.isAtTheSameSideWith_Of(root, nodeStack.peek(), b)) {
                 nodeStack.push(s);
             }
@@ -105,7 +118,7 @@ public class Graham {
         }
         out.println(nodeStack.size());
         long end = System.currentTimeMillis();
-        out.println(end - start);
+//        out.println(end - start);
         out.close();
     }
 
