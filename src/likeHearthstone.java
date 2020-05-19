@@ -13,27 +13,41 @@ public class likeHearthstone {
     }
     
     public static int pack(card[] cards, int c) {
-        int n = cards.length;
-        int[][] bag = new int[c + 1][30];
+        int[][] bag = new int[c + 1][31];
 //        int[][] num = new int[2][c + 1];
-        int get;
-        for (int i = 1; i < n; i++) {
-            for (int j = 0; j <= c; j++) {
-                for (int k = 1; k < 31; k++) {
-                    bag[j][k] = Math.max(bag[j][k], cards[i].value + bag[j - cards[i].cost][k - 1]);
-                }
-//                bag[i % 2][j] = bag[(i - 1) % 2][j];
-//                num[i % 2][j] = num[(i - 1) % 2][j];
-//                if (j >= cards[i].cost) {
-//                    get = cards[i].value + bag[(i - 1) % 2][j - cards[i].cost];
-//                    if (bag[i % 2][j] < get&&num[(i - 1) % 2][j - cards[i].cost]<30) {
-//                        bag[i % 2][j] = get;
-//                        num[i % 2][j] = num[(i - 1) % 2][j - cards[i].cost] + 1;
-//                    }
-//                }
+        bag[0][0] = 0;
+        for (int i = 1; i <= c; i++) {
+            for (int j = 1; j <= 30; j++) {
+                bag[i][j] = Integer.MIN_VALUE;
             }
         }
-        return bag[0][c];
+        for (int i = 1; i <= 90; i++) {
+            for (int j = cards[i].cost; j <= c; j++) {
+                for (int k = 1; k <= 30; k++) {
+                    bag[j][k] = Math.max(bag[j][k], cards[i].value + bag[j - cards[i].cost][k - 1]);
+                }
+            }
+        }
+        return bag[c][30];
+    }
+    
+    public static int pack2(card[] cards, int c) {
+        int[][] bag = new int[c + 1][31];
+//        int[][] num = new int[2][c + 1];
+        bag[0][0] = 0;
+        for (int i = 1; i <= c; i++) {
+            for (int j = 1; j <= 30; j++) {
+                bag[i][j] = Integer.MIN_VALUE;
+            }
+        }
+        for (int i = 1; i <= 90; i++) {
+            for (int j = c; j >= cards[i].cost; j--) {
+                for (int k = 30; k >= 1; k--) {
+                    bag[j][k] = Math.max(bag[j][k], cards[i].value + bag[j - cards[i].cost][k - 1]);
+                }
+            }
+        }
+        return bag[c][30];
     }
     
     public static void main(String[] args) {
@@ -51,6 +65,7 @@ public class likeHearthstone {
             cards[i] = new card(cost, a + h);
         }
         out.println(pack(cards, c));
+        out.println(pack2(cards, c));
         out.close();
     }
     
